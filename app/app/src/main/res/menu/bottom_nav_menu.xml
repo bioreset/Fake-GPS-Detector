@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/homescreen"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/mapview"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_mapview" />
+
+    <item
+        android:id="@+id/routers"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_routers" />
+
+    <item
+        android:id="@+id/celltowers"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_celltowers" />
+
+</menu>

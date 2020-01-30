@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/homescreen">
+
+    <fragment
+        android:id="@+id/homescreen"
+        android:name="com.example.fakegpsdetector.homescreen.HomeScreenFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/homescreen" />
+
+    <fragment
+        android:id="@+id/mapview"
+        android:name="com.example.fakegpsdetector.mapview.MapViewFragment"
+        android:label="@string/title_mapview"
+        tools:layout="@layout/mapview" />
+    <fragment
+        android:id="@+id/routers"
+        android:name="com.example.fakegpsdetector.routers.RoutersFragment"
+        android:label="@string/title_routers"
+        tools:layout="@layout/routers" />
+
+    <fragment
+        android:id="@+id/celltowers"
+        android:name="com.example.fakegpsdetector.celltowers.CellTowersFragment"
+        android:label="@string/title_celltowers"
+        tools:layout="@layout/celltowers" />
+</navigation>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Fake GPS Detector</string>
+    <string name="title_home">Home</string>
+    <string name="title_mapview">Map</string>
+    <string name="title_routers">Routers</string>
+    <string name="title_celltowers">Cell towers</string>
+</resources>
