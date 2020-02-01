@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.fakegpsdetector.R
+import kotlinx.android.synthetic.main.celltowers.*
 
 class CellTowersFragment : Fragment() {
 
@@ -19,13 +19,17 @@ class CellTowersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        cellTowersViewModel =
-            ViewModelProvider(this).get(CellTowersViewModel::class.java)
-        val root = inflater.inflate(R.layout.routers, container, false)
-        val textView: TextView = root.findViewById(R.id.text_celltowers)
-        cellTowersViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
+        val root = inflater.inflate(R.layout.celltowers, container, false)
         return root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        cellTowersViewModel = ViewModelProvider(this).get(CellTowersViewModel::class.java)
+        cellTowersViewModel.text.observe(this, Observer {
+            text_celltowers.text = it
+        })
+
     }
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.fakegpsdetector.R
+import kotlinx.android.synthetic.main.routers.*
 
 class RoutersFragment : Fragment() {
 
@@ -19,13 +20,17 @@ class RoutersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        routersViewModel =
-            ViewModelProvider(this).get(routersViewModel::class.java)
         val root = inflater.inflate(R.layout.routers, container, false)
-        val textView: TextView = root.findViewById(R.id.text_routers)
-        routersViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
         return root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        routersViewModel = ViewModelProvider(this).get(RoutersViewModel::class.java)
+        routersViewModel.text.observe(this, Observer {
+            text_routers.text = it
+        })
+
     }
 }

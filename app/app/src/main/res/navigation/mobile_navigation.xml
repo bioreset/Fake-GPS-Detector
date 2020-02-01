@@ -16,6 +16,7 @@
         android:name="com.example.fakegpsdetector.mapview.MapViewFragment"
         android:label="@string/title_mapview"
         tools:layout="@layout/mapview" />
+
     <fragment
         android:id="@+id/routers"
         android:name="com.example.fakegpsdetector.routers.RoutersFragment"
@@ -27,4 +28,5 @@
         android:name="com.example.fakegpsdetector.celltowers.CellTowersFragment"
         android:label="@string/title_celltowers"
         tools:layout="@layout/celltowers" />
+
 </navigation>

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 class RoutersViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+        value = "Here will be routers list"
     }
     val text: LiveData<String> = _text
 }

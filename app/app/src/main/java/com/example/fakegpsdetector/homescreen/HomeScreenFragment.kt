@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.fakegpsdetector.R
+import kotlinx.android.synthetic.main.homescreen.*
 
 class HomeScreenFragment : Fragment() {
 
@@ -19,13 +19,17 @@ class HomeScreenFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeScreenViewModel =
-            ViewModelProvider(this).get(HomeScreenViewModel::class.java)
         val root = inflater.inflate(R.layout.homescreen, container, false)
-        val textView: TextView = root.findViewById(R.id.text_homescreen)
-        homeScreenViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
         return root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        homeScreenViewModel = ViewModelProvider(this).get(HomeScreenViewModel::class.java)
+        homeScreenViewModel.text.observe(this, Observer {
+            text_homescreen2.text = it
+        })
+
     }
 }
