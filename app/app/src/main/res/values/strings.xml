@@ -4,4 +4,9 @@
     <string name="title_mapview">Map</string>
     <string name="title_routers">Routers</string>
     <string name="title_celltowers">Cell towers</string>
+    <string name="google_api_key">AIzaSyCuQIbpw2ozLYGWtZPDHDMpksqNMuwWFH8</string>
+    <string name="coordinates">COORDINATES:</string>
+    <string name="latlong">Longitude: %.3f, Latitude: %.3f</string>
+    <string name="enable_gps">Please enable your gps</string>
+    <string name="permission_request">App requires location permission</string>
 </resources>

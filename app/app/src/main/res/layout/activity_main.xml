@@ -19,20 +19,4 @@
         app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/bottom_nav_menu" />
 
-    <TextView
-        android:id="@+id/text_homescreen"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="353dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="352dp"
-
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
