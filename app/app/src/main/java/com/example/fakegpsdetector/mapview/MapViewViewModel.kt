@@ -2,12 +2,14 @@ package com.example.fakegpsdetector.mapview
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.fakegpsdetector.mapview.location.LocationLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 
 class MapViewViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val locationData = LocationLiveData(application)
-
-    fun getLocationData() = locationData
+    private val _text = MutableLiveData<String>().apply {
+        value = "Here will be map view"
+    }
+    val text: LiveData<String> = _text
 
 }

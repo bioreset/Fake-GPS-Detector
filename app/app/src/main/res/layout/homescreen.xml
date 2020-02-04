@@ -20,30 +20,34 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/latlong"
-        android:layout_width="wrap_content"
+        android:id="@+id/gpsStatusDisplay"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="0.0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.614" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="@string/gps_status_disabled"/>
 
     <TextView
-        android:id="@+id/textViewx"
-        android:layout_width="wrap_content"
+        android:id="@+id/permissionStatusDisplay"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="158dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="6dp"
-        android:text="@string/coordinates"
-        app:layout_constraintBottom_toTopOf="@+id/latlong"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_below="@id/gpsStatusDisplay"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_homescreen2"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gpsStatusDisplay"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="@string/permission_status_denied"
+        android:visibility="gone"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
