@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.fakegpsdetector.R
 
+
 class HomeScreenFragment : Fragment() {
 
     private lateinit var homeScreenViewModel: HomeScreenViewModel

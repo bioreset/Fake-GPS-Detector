@@ -1,20 +1,15 @@
 package com.example.fakegpsdetector.location
 
 import android.Manifest
-import android.app.Service
-import android.content.Intent
-import android.os.IBinder
+import android.location.Location
 import android.os.Looper
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.fakegpsdetector.utils.combineLatestWith
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 
-class LocationService : LifecycleService() {
+class LocationService : LifecycleService()  {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -29,7 +24,14 @@ class LocationService : LifecycleService() {
     private val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
 
     private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
+        override fun onLocationResult(locationResult: LocationResult?) {
+            locationResult ?: return
+            for (location in locationResult.locations) {
+                LocationModel(
+                    longitude = location.longitude,
+                    latitude = location.latitude
+                )
+            }
         }
     }
 
@@ -70,8 +72,6 @@ class LocationService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
 
-        startObservingGpsAndPermissionStatus()
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         locationRequest = LocationRequest.create().apply {
@@ -84,6 +84,10 @@ class LocationService : LifecycleService() {
             LocationPermissionStatusListener(this, locationPermission)
                 .combineLatestWith(LocationStatusListener(this))
         }
+
+        startObservingGpsAndPermissionStatus()
+
+        setfinalCoordinates()
 
     }
 
@@ -104,6 +108,18 @@ class LocationService : LifecycleService() {
                 error("Error when registerLocationUpdates()")
             }
         }
+    }
+
+    private fun setfinalCoordinates() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.also {
+                    LocationModel(
+                        longitude = it.longitude,
+                        latitude = it.latitude
+                    )
+                }
+            }
     }
 
     private fun unregisterFromLocationTracking() {
