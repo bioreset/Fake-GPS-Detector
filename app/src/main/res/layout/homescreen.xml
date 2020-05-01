@@ -69,6 +69,22 @@
                 tools:layout_editor_absoluteY="500dp" />
 
             <TextView
+                android:id="@+id/wifi_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="0dp"
+                tools:layout_editor_absoluteX="1dp"
+                tools:layout_editor_absoluteY="500dp" />
+
+            <TextView
                 android:id="@+id/latitude_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

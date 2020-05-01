@@ -1,13 +1,15 @@
 package com.dariusz.fakegpsdetector.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.LocationManager
-import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
+import android.telephony.CellInfo
+import android.telephony.NeighboringCellInfo
+import android.telephony.TelephonyManager
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,91 +17,49 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.dariusz.fakegpsdetector.R
-import com.dariusz.fakegpsdetector.gps.GpsStatus
-import com.dariusz.fakegpsdetector.permissions.PermissionStatus
 import com.dariusz.fakegpsdetector.ui.firstscreen.FirstScreenFragment
 import com.dariusz.fakegpsdetector.ui.secondscreen.SecondScreenFragment
 import com.dariusz.fakegpsdetector.ui.thirdscreen.ThirdScreenFragment
-import com.dariusz.fakegpsdetector.ui.thirdscreen.ThirdScreenViewModel
-import com.dariusz.fakegpsdetector.wifistatus.WifiStatus
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-
-class MainActivity : AppCompatActivity(), MainInterface {
+class MainActivity : AppCompatActivity() {
 
     private var alertDialog: AlertDialog? = null
 
-    private lateinit var mainViewModel : MainViewModel
+    private lateinit var mainViewModel: SharedViewModel
 
-    var gStatus: Boolean = false
-
-    var pStatus: Boolean = false
-
-    var wStatus: Boolean = false
-
-    private val permStatus = Observer<PermissionStatus> {status ->
-        status?.let {
-            pStatus = when (status) {
-                is PermissionStatus.Granted -> true
-                is PermissionStatus.Denied -> false
-            }
-        }
-    }
-
-    private val gpsStatus = Observer<GpsStatus> {status ->
-        status?.let {
-            gStatus = when (status) {
-                is GpsStatus.Enabled -> true
-                is GpsStatus.Disabled -> false
-            }
-        }
-    }
-
-    private val wifiStatus = Observer<WifiStatus> {status ->
-        status?.let {
-            wStatus = when (status) {
-                is WifiStatus.TurnedOn -> true
-                is WifiStatus.TurnedOff -> false
-            }
-        }
-    }
+    private lateinit var firstScreenFragment : FirstScreenFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         nav_view.setOnNavigationItemSelectedListener(navListener())
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().replace(R.id.container, FirstScreenFragment())
-                .commit()
-        }
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        checkStatuses()
+        goToFragment(FirstScreenFragment())
+        mainViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        firstScreenFragment = FirstScreenFragment()
         launchMain()
     }
 
-    override fun onResume() {
-        super.onResume()
-        checkStatuses()
-        launchMain()
-    }
+    private fun subscribeToPermissionCheck() =
+        mainViewModel.permissionCheck.observe(this, Observer {
+            handleAlertDialogs(it.status, "permissions")
+        })
 
-    private fun checkStatuses(){
-        mainViewModel.doPermissionCheck().observe(this, permStatus)
-        mainViewModel.getGpsStatus().observe(this, gpsStatus)
-        mainViewModel.doWifiStatusCheck().observe(this, wifiStatus)
-    }
+    private fun subscribeToGpsStatus() =
+        mainViewModel.gpsStatus.observe(this, Observer {
+            handleAlertDialogs(it.status, "gps")
+        })
 
-    override fun returnpStatus() : Boolean {
-        return pStatus
-    }
+    private fun subscribeToWifiStatus() =
+        mainViewModel.wifiStatusCheck.observe(this, Observer {
+            handleAlertDialogs(it.status, "wifi")
+        })
 
-    override fun returngStatus() : Boolean {
-        return gStatus
-    }
-
-    override fun returnwStatus() : Boolean {
-        return wStatus
+    private fun launchMain() {
+        subscribeToPermissionCheck()
+        subscribeToGpsStatus()
+        subscribeToWifiStatus()
     }
 
     private fun goToFragment(selectedFragment: Fragment) {
@@ -132,33 +92,20 @@ class MainActivity : AppCompatActivity(), MainInterface {
             false
         }
 
-    private fun launchMain() {
-        when {
-            !gStatus && pStatus -> {
-                handleGpsAlertDialog()
-            }
-            gStatus && !pStatus -> {
-                showPermissionsNeededDialog()
-            }
-            !gStatus && !pStatus && !wStatus -> {
-                handleGpsAlertDialog()
-                showPermissionsNeededDialog()
-            }
-        }
-    }
 
-    private fun handleGpsAlertDialog() {
-        if (gStatus)
-            hideGpsNotEnabledDialog()
-        else
-            showGpsNotEnabledDialog()
+    private fun handleAlertDialogs(status: Boolean, action: String) {
+        when (status) {
+            true -> alertDialog?.dismiss()
+            false ->
+                when (action) {
+                    "permissions" -> showPermissionsNeededDialog()
+                    "gps" -> showGpsNotEnabledDialog()
+                    "wifi" -> showWifiAlertDialog()
+                }
+        }
     }
 
     private fun showGpsNotEnabledDialog() {
-        if (alertDialog?.isShowing == true) {
-            return
-        }
-
         alertDialog = AlertDialog.Builder(this)
             .setTitle(R.string.gps_required_title)
             .setMessage(R.string.gps_required_body)
@@ -168,18 +115,14 @@ class MainActivity : AppCompatActivity(), MainInterface {
                 this.startActivity(intent)
             }
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
-    }
+            .create()
 
-    private fun hideGpsNotEnabledDialog() {
-        if (alertDialog?.isShowing == true) alertDialog?.dismiss()
+        alertDialog?.apply {
+            show()
+        }
     }
 
     private fun showPermissionsNeededDialog() {
-        if (alertDialog?.isShowing == true) {
-            return
-        }
-
         alertDialog = AlertDialog.Builder(this)
             .setTitle(R.string.permission_required_title)
             .setMessage(R.string.permission_required_body)
@@ -196,6 +139,23 @@ class MainActivity : AppCompatActivity(), MainInterface {
                 )
             }
             .setCancelable(false)
+            .create()
+
+        alertDialog?.apply {
+            show()
+        }
+    }
+
+    private fun showWifiAlertDialog() {
+        alertDialog = AlertDialog.Builder(this)
+            .setTitle(R.string.wifi_required_title)
+            .setMessage(R.string.wifi_required_body)
+            .setPositiveButton(R.string.action_settings) { _, _ ->
+                val intent = Intent()
+                intent.action = Settings.ACTION_WIFI_SETTINGS
+                this.startActivity(intent)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
             .create()
 
         alertDialog?.apply {

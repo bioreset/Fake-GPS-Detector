@@ -1,25 +1,48 @@
 package com.dariusz.fakegpsdetector.wifistatus
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import androidx.lifecycle.LiveData
-import com.dariusz.fakegpsdetector.R
+import com.dariusz.fakegpsdetector.model.WifiStatusModel
 
-class WifiStatusLiveData(private val context: Context): LiveData<WifiStatus>() {
+class WifiStatusLiveData(private val context: Context) : LiveData<WifiStatusModel>() {
 
-    override fun onActive() = isWifiEnabled()
+    private val wifiStatusReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = isWifiEnabled()
+    }
+
+    private var wifiManager: WifiManager =
+        context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+    override fun onActive() {
+        super.onActive()
+        registerReceiver()
+        isWifiEnabled()
+    }
+
+    override fun onInactive() {
+        super.onInactive()
+        unregisterReceiver()
+    }
 
     private fun isWifiEnabled() {
-        val isWifiOn = (context.getSystemService(Context.WIFI_SERVICE) as WifiManager).isWifiEnabled
-
-        if (isWifiOn)
-            postValue(WifiStatus.TurnedOn())
+        if (wifiManager.isWifiEnabled)
+            postValue(WifiStatusModel(status = true))
         else
-            postValue(WifiStatus.TurnedOff())
+            postValue(WifiStatusModel(status = false))
     }
-}
 
-sealed class WifiStatus {
-    data class TurnedOn(val message: Int = R.string.permission_status_granted) : WifiStatus()
-    data class TurnedOff(val message: Int = R.string.permission_status_denied) : WifiStatus()
+    private fun registerReceiver() {
+        context.registerReceiver(
+            wifiStatusReceiver,
+            IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        )
+    }
+
+    private fun unregisterReceiver() {
+        context.unregisterReceiver(wifiStatusReceiver)
+    }
 }

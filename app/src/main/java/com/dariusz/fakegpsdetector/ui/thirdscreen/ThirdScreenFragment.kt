@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.telephony.CellInfoGsm
+import android.telephony.CellInfoLte
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,20 +15,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.adapters.CellTowersListAdapter
 import com.dariusz.fakegpsdetector.model.CellTowerModel.Companion.newCellTowersList
-import com.dariusz.fakegpsdetector.ui.MainInterface
 import kotlinx.android.synthetic.main.celltower_list.*
 
 class ThirdScreenFragment : Fragment() {
 
-    private lateinit var listenerFromMA: MainInterface
-
     private lateinit var listAdapterCell: CellTowersListAdapter
 
-    private lateinit var cellTowersData : ThirdScreenViewModel
+    private lateinit var cellTowersData: ThirdScreenViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listenerFromMA = context as MainInterface
         listAdapterCell =
             CellTowersListAdapter(context)
     }
@@ -50,13 +47,14 @@ class ThirdScreenFragment : Fragment() {
 
         celltowerlist.adapter = listAdapterCell
 
+        @Suppress("UNCHECKED_CAST")
         cellTowersData.getCellTowersData().observe(viewLifecycleOwner, Observer {
             updateItems(it)
         })
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    fun updateItems(celltowers: List<CellInfoGsm>? = null) {
+    private fun updateItems(celltowers: List<CellInfoLte>? = null) {
         listAdapterCell.clear()
         if (celltowers != null) {
             listAdapterCell.addAll(newCellTowersList(celltowers))

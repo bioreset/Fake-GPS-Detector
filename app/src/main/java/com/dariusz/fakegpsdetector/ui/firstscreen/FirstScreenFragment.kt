@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.dariusz.fakegpsdetector.R
-import com.dariusz.fakegpsdetector.ui.MainInterface
+import com.dariusz.fakegpsdetector.ui.SharedViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,14 +23,9 @@ class FirstScreenFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var locationData: FirstScreenViewModel
 
-    private lateinit var listenerFromMA: MainInterface
+    private lateinit var systemData: SharedViewModel
 
     private lateinit var mMap: GoogleMap
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        listenerFromMA = context as MainInterface
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,14 +39,22 @@ class FirstScreenFragment : Fragment(), OnMapReadyCallback {
     @Override
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
         locationData = ViewModelProvider(this).get(FirstScreenViewModel::class.java)
+        systemData = ViewModelProvider(this).get(SharedViewModel::class.java)
         operateFirstFragment()
+        (childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
     }
 
     private fun operateFirstFragment() {
-        updateGpsCheckUI()
-        updatePermissionCheckUI()
+        systemData.permissionCheck.observe(viewLifecycleOwner, Observer {
+            updatePermissionCheckUI(it.status)
+        })
+        systemData.gpsStatus.observe(viewLifecycleOwner, Observer {
+            updateGpsCheckUI(it.status)
+        })
+        systemData.wifiStatusCheck.observe(viewLifecycleOwner, Observer {
+            updateWifiCheckUI(it.status)
+        })
         startLocationUpdate()
     }
 
@@ -59,14 +62,21 @@ class FirstScreenFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap!!
 
         locationData.getLocationData().observe(viewLifecycleOwner, Observer {
-            mMap.addMarker(MarkerOptions().position(LatLng(it.latitude, it.longitude)).title("Your current location"))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 18F))
+            mMap.addMarker(
+                MarkerOptions().position(LatLng(it.latitude, it.longitude))
+                    .title("Your current location: ${it.latitude}, ${it.longitude} ")
+            )
+            mMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(it.latitude, it.longitude),
+                    18F
+                )
+            )
         })
-
     }
 
-    private fun updateGpsCheckUI() {
-        when (listenerFromMA.returngStatus()) {
+    fun updateGpsCheckUI(gStatus: Boolean) {
+        when (gStatus) {
             true -> {
                 gps_status.text =
                     getString(R.string.gps_status_enabled)
@@ -79,20 +89,36 @@ class FirstScreenFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun updatePermissionCheckUI() {
-        when (listenerFromMA.returnpStatus()) {
+    fun updatePermissionCheckUI(pStatus: Boolean) {
+        when (pStatus) {
             true -> {
                 permissions_status?.text =
                     getString(R.string.permission_status_granted)
 
             }
 
-            else -> {
+            false -> {
                 permissions_status?.text =
                     getString(R.string.permission_status_denied)
             }
         }
     }
+
+    fun updateWifiCheckUI(wStatus: Boolean) {
+        when (wStatus) {
+            true -> {
+                wifi_status?.text =
+                    getString(R.string.wifi_status_enabled)
+
+            }
+
+            false -> {
+                wifi_status?.text =
+                    getString(R.string.wifi_status_disabled)
+            }
+        }
+    }
+
 
     private fun startLocationUpdate() {
         locationData.getLocationData().observe(viewLifecycleOwner, Observer {

@@ -3,7 +3,6 @@ package com.dariusz.fakegpsdetector.ui.secondscreen
 import android.content.Context
 import android.net.wifi.ScanResult
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,21 +11,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.adapters.RoutersListAdapter
-import com.dariusz.fakegpsdetector.model.RouterModel.Companion.newRoutersList
-import com.dariusz.fakegpsdetector.ui.MainInterface
+import com.dariusz.fakegpsdetector.model.RoutersListModel.Companion.newRoutersList
 import kotlinx.android.synthetic.main.routers_list.*
 
 class SecondScreenFragment : Fragment() {
 
-    private lateinit var listenerFromMA: MainInterface
-
     private lateinit var listAdapterWifi: RoutersListAdapter
 
-    private lateinit var wifiData : SecondScreenViewModel
+    private lateinit var wifiData: SecondScreenViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listenerFromMA = context as MainInterface
         listAdapterWifi =
             RoutersListAdapter(context)
     }
@@ -54,13 +49,12 @@ class SecondScreenFragment : Fragment() {
 
     }
 
-    fun updateItems(routers: List<ScanResult>? = null) {
+    private fun updateItems(routers: List<ScanResult>? = null) {
         listAdapterWifi.clear()
         if (routers != null) {
             listAdapterWifi.addAll(newRoutersList(routers))
         }
         listAdapterWifi.notifyDataSetChanged()
-        Log.i("XD", routers.toString())
     }
 
 }

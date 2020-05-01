@@ -14,7 +14,8 @@ class WifiScanLiveData(private var context: Context) : LiveData<List<ScanResult>
         override fun onReceive(context: Context, intent: Intent) = performScanning()
     }
 
-    private var wifiManager: WifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    private var wifiManager: WifiManager =
+        context.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     override fun onInactive() = unregisterReceiver()
 
@@ -28,11 +29,14 @@ class WifiScanLiveData(private var context: Context) : LiveData<List<ScanResult>
     }
 
     private fun performScanning() {
-        value = prepareScanning()
+        postValue(prepareScanning())
     }
 
     private fun registerReceiver() {
-        context.registerReceiver(wifiScanResultsReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
+        context.registerReceiver(
+            wifiScanResultsReceiver,
+            IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+        )
     }
 
     private fun unregisterReceiver() {

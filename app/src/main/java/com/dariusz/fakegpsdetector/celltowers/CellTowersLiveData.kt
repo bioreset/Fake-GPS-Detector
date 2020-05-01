@@ -4,36 +4,49 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.telephony.CellInfo
-import android.telephony.CellInfoGsm
-import android.telephony.TelephonyManager
+import android.content.IntentFilter
+import android.telephony.*
 import androidx.lifecycle.LiveData
 
-class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfoGsm>>() {
+class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfoLte>>() {
 
     private val wifiScanResultsReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) = returnData()
+        override fun onReceive(context: Context, intent: Intent) = prepareCellScan()
     }
 
     private val telephonyManager: TelephonyManager
         get() = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-    override fun onActive() {
-        returnData()
-    }
-
     @SuppressLint("MissingPermission")
-    private fun prepareManager(): List<CellInfo>? {
-        return telephonyManager.allCellInfo as List<CellInfo>
+    private var allCellInfo = telephonyManager.allCellInfo
+
+    override fun onActive() {
+        registerReceiver()
+        prepareCellScan()
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun castList(): List<CellInfoGsm> {
-        return prepareManager() as List<CellInfoGsm>
+    override fun onInactive() {
+        unregisterReceiver()
     }
 
-    private fun returnData() {
-        value = castList()
+    private fun castData(): List<CellInfoLte> {
+        return allCellInfo as List<CellInfoLte>
+    }
+
+    private fun prepareCellScan() {
+        postValue(castData())
+    }
+
+    private fun registerReceiver() {
+        context.registerReceiver(
+            wifiScanResultsReceiver,
+            IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
+        )
+    }
+
+    private fun unregisterReceiver() {
+        context.unregisterReceiver(wifiScanResultsReceiver)
     }
 
 }
+

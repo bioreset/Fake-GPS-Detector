@@ -40,10 +40,10 @@ class LocationLiveData(private var context: Context) : MutableLiveData<LocationM
     }
 
     private fun setLocationData(location: Location) {
-        value = LocationModel(
+        postValue(LocationModel(
             longitude = location.longitude,
             latitude = location.latitude
-        )
+        ))
     }
 
     private fun startLocationUpdates() {
