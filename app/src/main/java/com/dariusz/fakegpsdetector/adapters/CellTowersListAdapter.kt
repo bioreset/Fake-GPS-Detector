@@ -20,12 +20,12 @@ class CellTowersListAdapter(context: Context) : ArrayAdapter<CellTowerModel>(con
 
         view.txt_cellid.text = context.getString(R.string.cid_text, item?.cellId.toString())
         view.txt_locationareacode.text =
-            context.getString(R.string.lac_text, item?.locationAreaCode.toString())
+                context.getString(R.string.lac_text, item?.locationAreaCode.toString())
         view.txt_mobilecountrycode.text =
-            context.getString(R.string.mcc_text, item?.mobileCountryCode)
+                context.getString(R.string.mcc_text, item?.mobileCountryCode)
         view.mobilenetworkcode.text = context.getString(R.string.mnc_text, item?.mobileNetworkCode)
         view.signalstrength.text =
-            context.getString(R.string.station_level, item?.signalStrength.toString())
+                context.getString(R.string.station_level, item?.signalStrength.toString())
         return view
     }
 

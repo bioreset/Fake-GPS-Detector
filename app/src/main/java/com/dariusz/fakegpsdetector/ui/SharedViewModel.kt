@@ -9,10 +9,10 @@ import com.dariusz.fakegpsdetector.wifistatus.WifiStatusLiveData
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
-     val gpsStatus = GpsStatusLiveData(application)
+    val gpsStatus = GpsStatusLiveData(application)
 
-     val permissionCheck =
-        PermissionCheckLiveData(application, Manifest.permission.ACCESS_FINE_LOCATION)
+    val permissionCheck =
+            PermissionCheckLiveData(application, Manifest.permission.ACCESS_FINE_LOCATION)
 
-     val wifiStatusCheck = WifiStatusLiveData(application)
+    val wifiStatusCheck = WifiStatusLiveData(application)
 }

@@ -7,6 +7,8 @@ import android.content.IntentFilter
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import androidx.lifecycle.LiveData
+import com.dariusz.fakegpsdetector.model.RoutersListModel.Companion.newRoutersList
+import com.dariusz.fakegpsdetector.repository.RoutersListRepository
 
 class WifiScanLiveData(private var context: Context) : LiveData<List<ScanResult>>() {
 
@@ -15,7 +17,7 @@ class WifiScanLiveData(private var context: Context) : LiveData<List<ScanResult>
     }
 
     private var wifiManager: WifiManager =
-        context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            context.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     override fun onInactive() = unregisterReceiver()
 
@@ -24,7 +26,7 @@ class WifiScanLiveData(private var context: Context) : LiveData<List<ScanResult>
         performScanning()
     }
 
-    private fun prepareScanning(): List<ScanResult>? {
+     fun prepareScanning(): List<ScanResult>? {
         return wifiManager.scanResults as List<ScanResult>
     }
 
@@ -34,8 +36,8 @@ class WifiScanLiveData(private var context: Context) : LiveData<List<ScanResult>
 
     private fun registerReceiver() {
         context.registerReceiver(
-            wifiScanResultsReceiver,
-            IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+                wifiScanResultsReceiver,
+                IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
         )
     }
 

@@ -5,7 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.telephony.*
+import android.telephony.CellInfoLte
+import android.telephony.TelephonyManager
 import androidx.lifecycle.LiveData
 
 class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfoLte>>() {
@@ -29,6 +30,7 @@ class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfoL
         unregisterReceiver()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun castData(): List<CellInfoLte> {
         return allCellInfo as List<CellInfoLte>
     }
@@ -39,8 +41,8 @@ class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfoL
 
     private fun registerReceiver() {
         context.registerReceiver(
-            wifiScanResultsReceiver,
-            IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
+                wifiScanResultsReceiver,
+                IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
         )
     }
 

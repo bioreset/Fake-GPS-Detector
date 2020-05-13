@@ -28,13 +28,13 @@ class GpsStatusLiveData(private var context: Context) : LiveData<GpsStatusModel>
     }
 
     private fun isLocationEnabled() =
-        (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).isProviderEnabled(
-            LocationManager.GPS_PROVIDER
-        )
+            (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).isProviderEnabled(
+                    LocationManager.GPS_PROVIDER
+            )
 
     private fun registerReceiver() = context.registerReceiver(
-        gpsSwitchStateReceiver,
-        IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
+            gpsSwitchStateReceiver,
+            IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
     )
 
     private fun unregisterReceiver() = context.unregisterReceiver(gpsSwitchStateReceiver)

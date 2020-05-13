@@ -3,7 +3,6 @@ package com.dariusz.fakegpsdetector.ui.thirdscreen
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.telephony.CellInfoGsm
 import android.telephony.CellInfoLte
 import android.view.LayoutInflater
 import android.view.View
@@ -21,18 +20,18 @@ class ThirdScreenFragment : Fragment() {
 
     private lateinit var listAdapterCell: CellTowersListAdapter
 
-    private lateinit var cellTowersData: ThirdScreenViewModel
+    private lateinit var thirdScreenViewModel: ThirdScreenViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listAdapterCell =
-            CellTowersListAdapter(context)
+                CellTowersListAdapter(context)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.celltower_list, container, false)
@@ -43,12 +42,12 @@ class ThirdScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cellTowersData = ViewModelProvider(this).get(ThirdScreenViewModel::class.java)
+        thirdScreenViewModel = ViewModelProvider(this).get(ThirdScreenViewModel::class.java)
 
         celltowerlist.adapter = listAdapterCell
 
         @Suppress("UNCHECKED_CAST")
-        cellTowersData.getCellTowersData().observe(viewLifecycleOwner, Observer {
+        thirdScreenViewModel.getCellTowersData().observe(viewLifecycleOwner, Observer {
             updateItems(it)
         })
     }

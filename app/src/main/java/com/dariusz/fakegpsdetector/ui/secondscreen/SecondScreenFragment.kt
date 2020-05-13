@@ -18,18 +18,18 @@ class SecondScreenFragment : Fragment() {
 
     private lateinit var listAdapterWifi: RoutersListAdapter
 
-    private lateinit var wifiData: SecondScreenViewModel
+    private lateinit var secondScreenViewModel: SecondScreenViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listAdapterWifi =
-            RoutersListAdapter(context)
+                RoutersListAdapter(context)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.routers_list, container, false)
@@ -39,11 +39,11 @@ class SecondScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        wifiData = ViewModelProvider(this).get(SecondScreenViewModel::class.java)
+        secondScreenViewModel = ViewModelProvider(this).get(SecondScreenViewModel::class.java)
 
         routerlist.adapter = listAdapterWifi
 
-        wifiData.getWifiData().observe(viewLifecycleOwner, Observer {
+        secondScreenViewModel.getWifiData().observe(viewLifecycleOwner, Observer {
             updateItems(it)
         })
 

@@ -7,9 +7,9 @@ import com.dariusz.fakegpsdetector.location.LocationLiveData
 class FirstScreenViewModel(application: Application) : AndroidViewModel(application) {
 
     private val locationData =
-        LocationLiveData(
-            application
-        )
+            LocationLiveData(
+                    application
+            )
 
     fun getLocationData() = locationData
 

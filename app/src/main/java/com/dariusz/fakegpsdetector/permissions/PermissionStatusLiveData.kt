@@ -7,13 +7,13 @@ import androidx.lifecycle.LiveData
 import com.dariusz.fakegpsdetector.model.PermissionStatusModel
 
 class PermissionCheckLiveData(
-    private var context: Context,
-    private var permissionToListen: String
+        context: Context,
+        permissionToListen: String
 ) : LiveData<PermissionStatusModel>() {
 
     private val isPermissionGranted = ActivityCompat.checkSelfPermission(
-        context,
-        permissionToListen
+            context,
+            permissionToListen
     ) == PackageManager.PERMISSION_GRANTED
 
     override fun onActive() = handlePermissionCheck()

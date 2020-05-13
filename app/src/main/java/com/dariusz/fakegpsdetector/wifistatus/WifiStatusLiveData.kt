@@ -15,7 +15,7 @@ class WifiStatusLiveData(private val context: Context) : LiveData<WifiStatusMode
     }
 
     private var wifiManager: WifiManager =
-        context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            context.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     override fun onActive() {
         super.onActive()
@@ -37,8 +37,8 @@ class WifiStatusLiveData(private val context: Context) : LiveData<WifiStatusMode
 
     private fun registerReceiver() {
         context.registerReceiver(
-            wifiStatusReceiver,
-            IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+                wifiStatusReceiver,
+                IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
         )
     }
 
