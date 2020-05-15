@@ -1,14 +1,17 @@
 package com.dariusz.fakegpsdetector.api.retrofit
 
+import android.content.Context
 import android.util.Log
 import com.dariusz.fakegpsdetector.api.apimodel.ApiResponseModel
+import com.dariusz.fakegpsdetector.repository.LocationFromApiResponseRepository
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+class RestApiService(private var context: Context) {
 
-class RestApiService {
+    lateinit var result : ApiResponseModel
 
     fun checkLocation(jsonRequest: String) {
 
@@ -33,15 +36,15 @@ class RestApiService {
                                 val long = jsonlocation.getDouble("long")
                                 val accuracy = jsonlocation.getInt("accuracy")
 
-                                ApiResponseModel(status = "location",
+                               result = ApiResponseModel(status = "location",
                                         long = long, lat = lat, accuracy = accuracy)
-
                                 Log.i("API-SUCCESS", "API RESPONSE: LAT: $lat, LONG: $long, ACCURACY: $accuracy")
 
                             } else {
-                                ApiResponseModel(status = "error", long = 0.0, lat = 0.0, accuracy = 0)
+                                result = ApiResponseModel(status = "error", long = 0.0, lat = 0.0, accuracy = 0)
                                 Log.i("API-ERROR", "API ERROR ON RESPONSE")
                             }
+                            LocationFromApiResponseRepository.getInstance(context).insert(result)
                         }
                     }
                 }

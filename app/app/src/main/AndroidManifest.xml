@@ -34,12 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name="com.dariusz.fakegpsdetector.phoneinfo.PhoneInfoService">
-        </service>
-        <service
-            android:name="com.dariusz.fakegpsdetector.api.ApiTestService">
-        </service>
     </application>
 
 </manifest>

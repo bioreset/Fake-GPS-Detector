@@ -1,13 +1,25 @@
 package com.dariusz.fakegpsdetector.api.apimodel
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "locationfromapix_table")
 data class ApiResponseModel(
-        val status: String,
-        @SerializedName("long")
-        val long: Double?,
+        @ColumnInfo(name = "status")
+        var status: String? = "",
+        @ColumnInfo(name = "lat")
         @SerializedName("lat")
-        val lat: Double?,
+        var lat: Double? = 0.0,
+        @SerializedName("long")
+        @ColumnInfo(name = "long")
+        var long: Double? = 0.0,
+        @ColumnInfo(name = "accuracy")
         @SerializedName("accuracy")
-        val accuracy: Int?
-)
+        var accuracy: Int? = 0
+) {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    var id: Int = 0
+}
