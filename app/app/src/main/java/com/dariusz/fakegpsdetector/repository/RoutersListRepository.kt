@@ -15,7 +15,7 @@ class RoutersListRepository(context: Context) {
         insertAsync(routerList)
     }
 
-    fun selectAll(): LiveData<List<RoutersListModel>> {
+    fun selectAll(): List<RoutersListModel> {
         return routersListDao.getAllRouters()
     }
 

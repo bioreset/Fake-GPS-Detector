@@ -12,7 +12,7 @@ data class ApiResponseModel(
         @ColumnInfo(name = "lat")
         @SerializedName("lat")
         var lat: Double? = 0.0,
-        @SerializedName("long")
+        @SerializedName("lng")
         @ColumnInfo(name = "long")
         var long: Double? = 0.0,
         @ColumnInfo(name = "accuracy")

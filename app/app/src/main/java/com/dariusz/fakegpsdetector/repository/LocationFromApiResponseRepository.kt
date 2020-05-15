@@ -1,7 +1,6 @@
 package com.dariusz.fakegpsdetector.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import com.dariusz.fakegpsdetector.api.apimodel.ApiResponseModel
 import com.dariusz.fakegpsdetector.db.dao.LocationFromApiResponseDao
 import com.dariusz.fakegpsdetector.db.init.FGDDatabase
@@ -15,7 +14,7 @@ class LocationFromApiResponseRepository(context: Context) {
         insertAsync(apiResponse)
     }
 
-    fun selectAll(): LiveData<ApiResponseModel> {
+    fun selectAll(): ApiResponseModel {
         return locationFromApiResponse.getLocationFromApiInfo()
     }
 

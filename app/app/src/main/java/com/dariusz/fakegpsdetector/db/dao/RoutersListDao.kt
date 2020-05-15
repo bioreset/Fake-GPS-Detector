@@ -1,10 +1,6 @@
 package com.dariusz.fakegpsdetector.db.dao
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.dariusz.fakegpsdetector.model.RoutersListModel
 
 @Dao
@@ -17,7 +13,8 @@ interface RoutersListDao {
     @Query("DELETE FROM routers_table")
     fun deleteAllRouters()
 
-    @Query("SELECT id, ssid, macAddress, frequency, level FROM routers_table ")
-    fun getAllRouters(): LiveData<List<RoutersListModel>>
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @Query("SELECT id, macAddress, frequency, level FROM routers_table ")
+    fun getAllRouters(): List<RoutersListModel>
 
 }

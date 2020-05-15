@@ -3,7 +3,9 @@ package com.dariusz.fakegpsdetector.model
 import android.net.wifi.ScanResult
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "routers_table")

@@ -15,7 +15,7 @@ class LocationRepository(context: Context) {
         insertAsync(location)
     }
 
-    fun selectAll(): LiveData<LocationModel> {
+    fun selectAll(): LocationModel {
         return locationDao.getLocation()
     }
 

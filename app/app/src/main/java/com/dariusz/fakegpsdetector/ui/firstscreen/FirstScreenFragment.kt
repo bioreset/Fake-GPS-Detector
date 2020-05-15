@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.dariusz.fakegpsdetector.R
+import com.dariusz.fakegpsdetector.api.apimodel.ApiResponseModel
 import com.dariusz.fakegpsdetector.model.LocationModel
+import com.dariusz.fakegpsdetector.repository.LocationFromApiResponseRepository
 import com.dariusz.fakegpsdetector.repository.LocationRepository
 import com.dariusz.fakegpsdetector.ui.SharedViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,11 +30,14 @@ class FirstScreenFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    private lateinit var repo: LocationRepository
+    private lateinit var repo_location: LocationRepository
+
+    private lateinit var repo_result: LocationFromApiResponseRepository
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        repo = LocationRepository.getInstance(context)
+        repo_location = LocationRepository.getInstance(context)
+        repo_result = LocationFromApiResponseRepository.getInstance(context)
     }
 
     override fun onCreateView(
@@ -128,6 +133,23 @@ class FirstScreenFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    fun getStatus() {
+        when (showResult().status) {
+            "location" -> {
+                result_title.text = showResult().status
+                result_lat.text = showResult().lat.toString()
+                result_long.text = showResult().long.toString()
+                result_accuracy.text = showResult().accuracy.toString()
+            }
+            "error" -> {
+                result_title.text = "Error: Something went wrong"
+                result_lat.visibility = View.GONE
+                result_long.visibility = View.GONE
+                result_accuracy.visibility = View.GONE
+            }
+        }
+    }
+
     private fun startLocationUpdate() {
         firstScreenViewModel.getLocationData().observe(viewLifecycleOwner, Observer {
             longitude_value.text = it.longitude.toString()
@@ -136,7 +158,11 @@ class FirstScreenFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addToDb(location: LocationModel) {
-        return repo.insert(location)
+        return repo_location.insert(location)
+    }
+
+    private fun showResult(): ApiResponseModel {
+        return repo_result.selectAll()
     }
 
 }

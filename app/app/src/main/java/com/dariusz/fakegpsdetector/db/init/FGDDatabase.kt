@@ -10,7 +10,7 @@ import com.dariusz.fakegpsdetector.model.CellTowerModel
 import com.dariusz.fakegpsdetector.model.LocationModel
 import com.dariusz.fakegpsdetector.model.RoutersListModel
 
-@Database(entities = [CellTowerModel::class, LocationModel::class, RoutersListModel::class, ApiResponseModel::class], version = 4, exportSchema = false)
+@Database(entities = [CellTowerModel::class, LocationModel::class, RoutersListModel::class, ApiResponseModel::class], version = 5, exportSchema = false)
 abstract class FGDDatabase : RoomDatabase() {
 
     abstract fun locationDao(): LocationDao

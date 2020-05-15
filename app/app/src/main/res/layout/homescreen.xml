@@ -110,7 +110,7 @@
                 tools:layout_editor_absoluteY="612dp" />
 
             <TextView
-                android:id="@+id/logitude_text"
+                android:id="@+id/longitude_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/longitude"
@@ -133,6 +133,42 @@
                 tools:layout_conversion_absoluteWidth="409dp"
                 tools:layout_editor_absoluteX="1dp"
                 tools:layout_editor_absoluteY="544dp" />
+
+            <TextView
+                android:id="@+id/result_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#2196F3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/result_lat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#2196F3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/result_long"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#2196F3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/result_accuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#2196F3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
 
         </LinearLayout>

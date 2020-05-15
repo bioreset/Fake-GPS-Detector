@@ -3,9 +3,8 @@ package com.dariusz.fakegpsdetector.model
 import android.os.Build
 import android.telephony.CellInfoLte
 import androidx.annotation.RequiresApi
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "celltowers_table")
@@ -23,7 +22,7 @@ data class CellTowerModel(
         @SerializedName("mobileNetworkCode")
         val mobileNetworkCode: String?,
         @ColumnInfo(name = "signalStrength")
-        val signalStrength: Int
+        val signalStrength: Int?
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

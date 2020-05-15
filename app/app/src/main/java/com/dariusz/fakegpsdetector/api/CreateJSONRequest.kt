@@ -1,84 +1,38 @@
 package com.dariusz.fakegpsdetector.api
 
 import android.content.Context
-import android.util.Log
+import com.dariusz.fakegpsdetector.api.apimodel.ApiRequestModel
 import com.dariusz.fakegpsdetector.repository.CellTowersRepository
-import com.dariusz.fakegpsdetector.repository.PhoneInfoRepository
 import com.dariusz.fakegpsdetector.repository.RoutersListRepository
 import com.google.gson.GsonBuilder
 
-class CreateJSONRequest(context: Context) {
+class CreateJSONRequest(private var context: Context) {
 
     private var cellData = CellTowersRepository.getInstance(context).selectAll()
-
-    private var phoneInfo = PhoneInfoRepository.getInstance(context).selectAll()
 
     private var routersData = RoutersListRepository.getInstance(context).selectAll()
 
     private var gsonPretty = GsonBuilder().setPrettyPrinting().create()
 
-    private var startingPoint: String = ""
+    fun buildJSONRequest(): String {
 
-    private var cellDataStuff: String = ""
+        /*
+        var routerModel1 = RoutersListModel(macAddress = "18:35:d1:f6:63:3f", level = -43, ssid = null)
+        var routerModel2 = RoutersListModel(macAddress = "18:35:d1:c4:e2:ef", level = -46, ssid = null)
 
-    private var closingCellData: String = ""
-
-    private var routersStuff: String = ""
-
-    private var closingRequest: String = ""
-
-    fun createJSONRequest() {
-        Log.i("XD", buildRequest())
-    }
-
-    private fun buildRequest(): String {
-        startingPoint = """{ \n
-                                      "homeMobileCountryCode": ${phoneInfo.value?.homeMobileCountryCode},\n
-                                      "homeMobileNetworkCode": ${phoneInfo.value?.homeMobileNetworkCode},\n
-                                      "radioType": "${phoneInfo.value?.radioType}",\n
-                                      "carrier": "${phoneInfo.value?.carrier}",\n
-                                      "considerIp": "true",\n
-                                      "cellTowers": [\n
-                                      
-                                      """
+        var tower1 = CellTowerModel(cellId = 128142964, mobileCountryCode = "234", mobileNetworkCode = "10", locationAreaCode = 192, signalStrength = -96)
+        var tower2 = CellTowerModel(cellId = 402945, mobileCountryCode = "234", mobileNetworkCode = "20", locationAreaCode = 2085, signalStrength =  null)
 
 
-        for (cellDatum in cellData.value.orEmpty()) {
-            cellDataStuff = """
-                                            {\n
-                                              "cellId": ${cellDatum.cellId},\n
-                                              "locationAreaCode": ${cellDatum.locationAreaCode},\n
-                                              "mobileCountryCode": ${cellDatum.mobileCountryCode},\n
-                                              "mobileNetworkCode": ${cellDatum.mobileNetworkCode}\n
-                                            }\n
-                                            """
-        }
+        var routersList =  arrayListOf(routerModel1, routerModel2)
+        var towersList =  arrayListOf(tower1, tower2)
 
-        closingCellData = """
-            
-                                                ],\n
-                                                  "wifiAccessPoints": [\n
-                                                  
-                                                """
+        */
 
+        var request = ApiRequestModel(cellTowersList = cellData, routersList = routersData)
 
-        for (routersDatum in routersData.value.orEmpty()) {
-            routersStuff = """
-                                                    {\n
-                                                    "macAddress": "${routersDatum.macAddress}",\n
-                                                    "signalStrength": ${routersDatum.level},\n
-                                                    "signalToNoiseRatio": 0\n
-                                                    }\n
-                                                    
-                                                    """
-        }
+        return gsonPretty.toJson(request)
 
-        closingRequest = """
-                                    ]\n
-                                }\n
-                                """
-
-        return gsonPretty.toJson(startingPoint + cellDataStuff + closingCellData + routersStuff + closingRequest)
     }
 
 

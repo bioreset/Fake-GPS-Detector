@@ -17,6 +17,6 @@ interface LocationDao {
     fun deleteAllLocationInfo()
 
     @Query("SELECT id, longitude, latitude FROM location WHERE id=1")
-    fun getLocation(): LiveData<LocationModel>
+    fun getLocation(): LocationModel
 
 }

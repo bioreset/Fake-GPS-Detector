@@ -24,7 +24,7 @@ class WifiScanLiveData(private var context: Context) : LiveData<List<ScanResult>
         performScanning()
     }
 
-    fun prepareScanning(): List<ScanResult>? {
+    private fun prepareScanning(): List<ScanResult>? {
         return wifiManager.scanResults as List<ScanResult>
     }
 

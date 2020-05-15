@@ -16,7 +16,7 @@ interface LocationFromApiResponseDao {
     @Query("DELETE FROM locationfromapix_table")
     fun deleteAllLocationFromApiRecords()
 
-    @Query("SELECT lat, long, accuracy FROM locationfromapix_table WHERE id=1")
-    fun getLocationFromApiInfo(): LiveData<ApiResponseModel>
+    @Query("SELECT * FROM locationfromapix_table WHERE id=1")
+    fun getLocationFromApiInfo(): ApiResponseModel
 
 }

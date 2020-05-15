@@ -1,7 +1,6 @@
 package com.dariusz.fakegpsdetector.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import com.dariusz.fakegpsdetector.db.dao.CellTowersDao
 import com.dariusz.fakegpsdetector.db.init.FGDDatabase
 import com.dariusz.fakegpsdetector.model.CellTowerModel
@@ -15,7 +14,7 @@ class CellTowersRepository(context: Context) {
         insertAsync(cellTowerList)
     }
 
-    fun selectAll(): LiveData<List<CellTowerModel>> {
+    fun selectAll(): List<CellTowerModel> {
         return cellTowersDao.getAllCellTowers()
     }
 
