@@ -1,5 +1,6 @@
 package com.dariusz.fakegpsdetector.repository
 
+import androidx.lifecycle.asLiveData
 import com.dariusz.fakegpsdetector.db.dao.RoutersListDao
 import com.dariusz.fakegpsdetector.model.RoutersListModel
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
@@ -14,8 +15,8 @@ constructor(
         performCacheCall(routersListDao.insertAll(routerList))
     }
 
-    suspend fun selectAll(): List<RoutersListModel>? =
-        performCacheCall(routersListDao.getAllRouters()).value
+    suspend fun selectAll() =
+        performCacheCall(routersListDao.getAllRouters()).asLiveData().value
 
     private suspend fun deleteAll() = performCacheCall(routersListDao.deleteAllRouters())
 

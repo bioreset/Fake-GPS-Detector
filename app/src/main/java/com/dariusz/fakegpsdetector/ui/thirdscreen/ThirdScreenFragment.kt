@@ -9,12 +9,13 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.coroutineScope
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.CellTowerModel.Companion.newCellTowersList
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
 import com.dariusz.fakegpsdetector.utils.Injectors
 import kotlinx.android.synthetic.main.celltower_list.*
+import kotlinx.coroutines.launch
 
 class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
 
@@ -35,12 +36,12 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            fetchNewCellTowerData().observe(viewLifecycleOwner, Observer {
-                updateItems(it)
+        fetchNewCellTowerData().observe(viewLifecycleOwner, Observer {
+            viewLifecycleOwner.lifecycle.coroutineScope.launch {
                 addToDb(it)
-            })
-        }
+            }
+            updateItems(it)
+        })
 
         celltowerlist.adapter = listAdapterCell
 

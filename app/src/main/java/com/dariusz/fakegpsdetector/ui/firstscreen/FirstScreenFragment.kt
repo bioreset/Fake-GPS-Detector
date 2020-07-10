@@ -7,9 +7,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.coroutineScope
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.LocationModel
-import com.dariusz.fakegpsdetector.ui.MainInterface
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.calculateDistance
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.isRealLocation
 import com.dariusz.fakegpsdetector.utils.Injectors
@@ -20,6 +20,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.homescreen.*
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.launch
 
 class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
 
@@ -29,15 +31,9 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    private lateinit var mainInterface: MainInterface
-
     private var resultx: String = ""
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainInterface = context as MainInterface
-    }
-
+    @InternalCoroutinesApi
     @Override
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,8 +41,10 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         (childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
 
         refresh_data.setOnClickListener {
-            mainInterface.doCheck()
-            getStatus(mainInterface.returnStatus())
+            viewLifecycleOwner.lifecycle.coroutineScope.launch {
+                doCheck()
+                getStatus(checkStatusAfterAction())
+            }
         }
     }
 
@@ -54,7 +52,9 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         mMap = googleMap!!
 
         firstScreenViewModel.locationData.observe(viewLifecycleOwner, Observer {
-            addToDb(it)
+            viewLifecycleOwner.lifecycle.coroutineScope.launch {
+                addToDb(it)
+            }
             mMap.addMarker(
                 MarkerOptions().position(LatLng(it.latitude, it.longitude))
                     .title("Your current location: ${it.latitude}, ${it.longitude} ")
@@ -117,4 +117,9 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         return resultx
     }
 
+    private suspend fun doCheck() = firstScreenViewModel.performCheck()
+
+    @InternalCoroutinesApi
+    private suspend fun checkStatusAfterAction() =
+        firstScreenViewModel.repoResult.checkLocationStatus()?.status
 }

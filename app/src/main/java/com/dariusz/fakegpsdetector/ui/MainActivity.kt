@@ -6,11 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.dariusz.fakegpsdetector.R
-import com.dariusz.fakegpsdetector.api.RestApiService
 import com.dariusz.fakegpsdetector.ui.firstscreen.FirstScreenFragment
 import com.dariusz.fakegpsdetector.ui.secondscreen.SecondScreenFragment
 import com.dariusz.fakegpsdetector.ui.thirdscreen.ThirdScreenFragment
-import com.dariusz.fakegpsdetector.utils.CreateJSONRequest.buildJSONRequest
 import com.dariusz.fakegpsdetector.utils.DialogManager.dismissTheDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showGpsNotEnabledDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showPermissionsNeededDialog
@@ -19,16 +17,13 @@ import com.dariusz.fakegpsdetector.utils.Injectors
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), MainInterface {
+class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: SharedViewModel by viewModels {
         Injectors.provideSharedViewModelFactory(this)
     }
-    private lateinit var api: RestApiService
 
     private lateinit var firstScreenFragment: FirstScreenFragment
-
-    private lateinit var createJSON: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,28 +37,6 @@ class MainActivity : AppCompatActivity(), MainInterface {
 
         launchMain()
 
-        supportFragmentManager.executePendingTransactions()
-
-        createJSON = buildJSONRequest(this)
-
-        api = mainViewModel.service
-
-        doCheck()
-
-    }
-
-    private fun createJson() = createJSON
-
-    private fun checkLocation(json: String) {
-        return api.checkLocation(json)
-    }
-
-    override fun doCheck() {
-        return checkLocation(createJson())
-    }
-
-    override fun returnStatus(): String? {
-        return api.repo.selectAll().status
     }
 
     private fun subscribeToPermissionCheck() =
@@ -87,7 +60,7 @@ class MainActivity : AppCompatActivity(), MainInterface {
         subscribeToWifiStatus()
     }
 
-    override fun goToFragment(selectedFragment: Fragment) {
+    private fun goToFragment(selectedFragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, selectedFragment)
         transaction.addToBackStack(null)

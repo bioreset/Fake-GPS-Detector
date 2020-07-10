@@ -9,7 +9,7 @@ class FakeGPSRestApiService {
 
     suspend fun checkCurrentLocation(
         jsonBody: String,
-        key: String = "AIzaSyBYvjzEoJUdnCCMkFBTEB_V4L-aQnWpBW8"
+        key: String = "AIzaSyCkZcvE_QrR-PCCpBP1g-LgrIOywhqSuAU"
     ) =
         retrofit.checkLocation(jsonBody, key)
 

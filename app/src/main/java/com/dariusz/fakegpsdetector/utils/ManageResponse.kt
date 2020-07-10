@@ -1,47 +1,35 @@
 package com.dariusz.fakegpsdetector.utils
 
-import android.util.Log
 import com.dariusz.fakegpsdetector.model.ApiResponseModel
+import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performApiCall
 import org.json.JSONObject
-import retrofit2.Response
 
 object ManageResponse {
 
-    private var result: ApiResponseModel = ApiResponseModel()
+    suspend fun manageResponse(response: String?, cacheCall: suspend (ApiResponseModel) -> Unit) =
+        if (response != null) performApiCall(cacheCall.invoke(parseJSONResponse(response)))
+        else null
 
-    fun translateResponse(response: Response<String>) {
-        if (response.isSuccessful) {
-            response.body()?.let {
-                if (it.contains("location")) {
-                    val json = JSONObject(response.body()!!)
-                    val jsonlocation = json.getJSONObject("location")
-
-                    val lat = jsonlocation.getDouble("lat")
-                    val lng = jsonlocation.getDouble("lng")
-                    val accuracy = json.getInt("accuracy")
-
-                    result =
-                        ApiResponseModel(
-                            status = "location",
-                            lng = lng,
-                            lat = lat,
-                            accuracy = accuracy
-                        )
-
-                    Log.d("API", "onResponse;  body: $result")
-
-                } else {
-                    Log.i("API-ERROR", "API ERROR ON RESPONSE")
-                    result =
-                        ApiResponseModel(
-                            status = "location",
-                            lng = 0.0,
-                            lat = 0.00,
-                            accuracy = 0
-                        )
-                }
-
-            }
+    private fun parseJSONResponse(response: String): ApiResponseModel {
+        return if (response.contains("location")) {
+            val json = JSONObject(response)
+            val jsonlocation = json.getJSONObject("location")
+            val lat = jsonlocation.getDouble("lat")
+            val lng = jsonlocation.getDouble("lng")
+            val accuracy = json.getInt("accuracy")
+            ApiResponseModel(
+                status = "location",
+                lng = lng,
+                lat = lat,
+                accuracy = accuracy
+            )
+        } else {
+            ApiResponseModel(
+                status = "location_error",
+                lng = 0.0,
+                lat = 0.00,
+                accuracy = 0
+            )
         }
     }
 

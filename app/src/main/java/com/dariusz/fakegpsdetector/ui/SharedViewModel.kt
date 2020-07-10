@@ -3,7 +3,6 @@ package com.dariusz.fakegpsdetector.ui
 import android.Manifest
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.dariusz.fakegpsdetector.api.RestApiService
 import com.dariusz.fakegpsdetector.datasource.GpsStatusLiveData
 import com.dariusz.fakegpsdetector.datasource.PermissionStatusLiveData
 import com.dariusz.fakegpsdetector.datasource.WifiStatusLiveData
@@ -22,5 +21,4 @@ class SharedViewModel(context: Context) : ViewModel() {
     val wifiStatusCheck =
         WifiStatusLiveData(context)
 
-    val service = RestApiService(context)
 }

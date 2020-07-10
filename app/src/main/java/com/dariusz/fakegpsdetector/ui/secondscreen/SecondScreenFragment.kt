@@ -7,11 +7,13 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.coroutineScope
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.RoutersListModel.Companion.newRoutersList
 import com.dariusz.fakegpsdetector.ui.adapters.RoutersListAdapter
 import com.dariusz.fakegpsdetector.utils.Injectors
 import kotlinx.android.synthetic.main.routers_list.*
+import kotlinx.coroutines.launch
 
 class SecondScreenFragment : Fragment(R.layout.routers_list) {
 
@@ -34,7 +36,9 @@ class SecondScreenFragment : Fragment(R.layout.routers_list) {
         routerlist.adapter = listAdapterWifi
 
         secondScreenViewModel.wifiData.observe(viewLifecycleOwner, Observer {
-            addToDb(it)
+            viewLifecycleOwner.lifecycle.coroutineScope.launch {
+                addToDb(it)
+            }
             updateItems(it)
         })
 
