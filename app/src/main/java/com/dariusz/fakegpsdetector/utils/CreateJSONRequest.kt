@@ -8,8 +8,6 @@ import com.google.gson.GsonBuilder
 
 object CreateJSONRequest {
 
-    private lateinit var request: ApiRequestModel
-
     suspend fun buildJSONRequest(context: Context): String {
 
         val cellData = getCellTowersRepository(context).selectAll()
@@ -18,16 +16,16 @@ object CreateJSONRequest {
 
         val gsonPretty = GsonBuilder().setPrettyPrinting().create()
 
-        if (cellData != null && routersData != null) {
-            request = ApiRequestModel(
-                cellTowersList = cellData,
-                routersList = routersData
+        return if (cellData != null && routersData != null) {
+            gsonPretty.toJson(
+                ApiRequestModel(
+                    cellTowersList = cellData,
+                    routersList = routersData
+                )
             )
+        } else {
+            ""
         }
-
-        return gsonPretty.toJson(request)
-
     }
-
 
 }

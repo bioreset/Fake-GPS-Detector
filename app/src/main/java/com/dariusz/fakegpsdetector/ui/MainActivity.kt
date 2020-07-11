@@ -39,6 +39,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        turnOffMain()
+    }
+
     private fun subscribeToPermissionCheck() =
         mainViewModel.permissionCheck.observe(this, Observer {
             handleAlertPermissions(it.status)
@@ -58,6 +63,12 @@ class MainActivity : AppCompatActivity() {
         subscribeToPermissionCheck()
         subscribeToGpsStatus()
         subscribeToWifiStatus()
+    }
+
+    private fun turnOffMain() {
+        mainViewModel.wifiStatusCheck.removeObservers(this@MainActivity)
+        mainViewModel.gpsStatus.removeObservers(this@MainActivity)
+        mainViewModel.permissionCheck.removeObservers(this@MainActivity)
     }
 
     private fun goToFragment(selectedFragment: Fragment) {
@@ -93,22 +104,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleAlertPermissions(status: Boolean) {
         when (status) {
-            false -> showPermissionsNeededDialog(applicationContext)
-            true -> dismissTheDialog(showPermissionsNeededDialog(applicationContext))
+            false -> showPermissionsNeededDialog(this@MainActivity)
+            true -> dismissTheDialog(showPermissionsNeededDialog(this@MainActivity))
         }
     }
 
     private fun handleAlertGps(status: Boolean) {
         when (status) {
-            false -> showGpsNotEnabledDialog(applicationContext)
-            true -> dismissTheDialog(showGpsNotEnabledDialog(applicationContext))
+            false -> showGpsNotEnabledDialog(this@MainActivity)
+            true -> dismissTheDialog(showGpsNotEnabledDialog(this@MainActivity))
         }
     }
 
     private fun handleAlertWifi(status: Boolean) {
         when (status) {
-            false -> showWifiAlertDialog(applicationContext)
-            true -> dismissTheDialog(showWifiAlertDialog(applicationContext))
+            false -> showWifiAlertDialog(this@MainActivity)
+            true -> dismissTheDialog(showWifiAlertDialog(this@MainActivity))
         }
     }
 

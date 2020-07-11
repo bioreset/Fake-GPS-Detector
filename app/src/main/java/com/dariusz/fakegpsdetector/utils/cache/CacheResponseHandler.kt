@@ -2,6 +2,7 @@ package com.dariusz.fakegpsdetector.utils.cache
 
 object CacheResponseHandler {
 
+    @Suppress("UNCHECKED_CAST")
     fun <T> getResultFromCache(response: CacheStatus<T>): T {
         return when (response) {
 

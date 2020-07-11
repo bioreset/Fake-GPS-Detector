@@ -1,13 +1,13 @@
 package com.dariusz.fakegpsdetector.utils
 
 import com.dariusz.fakegpsdetector.model.ApiResponseModel
-import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performApiCall
+import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
 import org.json.JSONObject
 
 object ManageResponse {
 
     suspend fun manageResponse(response: String?, cacheCall: suspend (ApiResponseModel) -> Unit) =
-        if (response != null) performApiCall(cacheCall.invoke(parseJSONResponse(response)))
+        if (response != null) performCacheCall(cacheCall.invoke(parseJSONResponse(response)))
         else null
 
     private fun parseJSONResponse(response: String): ApiResponseModel {

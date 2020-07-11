@@ -7,7 +7,7 @@ import com.dariusz.fakegpsdetector.repository.LocationFromApiResponseRepository
 import com.dariusz.fakegpsdetector.repository.LocationRepository
 
 class FirstScreenViewModel(
-    private val context: Context,
+    context: Context,
     locationRepository: LocationRepository,
     locationFromApiResponseRepository: LocationFromApiResponseRepository
 ) : ViewModel() {
@@ -21,6 +21,5 @@ class FirstScreenViewModel(
 
     val repoResult = locationFromApiResponseRepository
 
-    suspend fun performCheck() = repoResult.performAction(context)
 
 }

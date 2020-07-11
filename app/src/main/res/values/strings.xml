@@ -41,4 +41,9 @@
     <string name="ssid_text">SSID: %1$s</string>
     <string name="mac_text">MAC Address: %1$s</string>
 
+    <string name="true_location_text">Current location is real.</string>
+    <string name="spoofed_location_text">Spoofed Location or too small sample size</string>
+    <string name="error_checking_location_text">Error: Something went wrong</string>
+    <string name="empty_db_text">Empty database</string>
+
 </resources>

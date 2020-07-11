@@ -1,18 +1,17 @@
 package com.dariusz.fakegpsdetector.ui.firstscreen
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.coroutineScope
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.LocationModel
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.calculateDistance
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.isRealLocation
 import com.dariusz.fakegpsdetector.utils.Injectors
+import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutine
+import com.dariusz.fakegpsdetector.utils.ViewUtils.showOnFragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -21,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.homescreen.*
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.launch
 
 class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
 
@@ -29,9 +27,7 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         Injectors.provideFirstScreenViewModelFactory(requireContext())
     }
 
-    private lateinit var mMap: GoogleMap
-
-    private var resultx: String = ""
+    private lateinit var googleMapObject: GoogleMap
 
     @InternalCoroutinesApi
     @Override
@@ -41,34 +37,46 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         (childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
 
         refresh_data.setOnClickListener {
-            viewLifecycleOwner.lifecycle.coroutineScope.launch {
-                doCheck()
+            performActionInsideCoroutine(viewLifecycleOwner) {
+                performCheck()
                 getStatus(checkStatusAfterAction())
             }
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
-        mMap = googleMap!!
+        googleMapObject = googleMap!!
 
-        firstScreenViewModel.locationData.observe(viewLifecycleOwner, Observer {
-            viewLifecycleOwner.lifecycle.coroutineScope.launch {
-                addToDb(it)
-            }
-            mMap.addMarker(
-                MarkerOptions().position(LatLng(it.latitude, it.longitude))
-                    .title("Your current location: ${it.latitude}, ${it.longitude} ")
-            )
-            mMap.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    LatLng(it.latitude, it.longitude),
-                    18F
+        showOnFragment(
+            fetchLocationData(),
+            viewLifecycleOwner,
+            actionInCoroutine = {
+                addToDb(it!!)
+            },
+            actionOnMain = {
+                it!!
+                googleMapObject.addMarker(
+                    MarkerOptions().position(LatLng(it.latitude, it.longitude))
+                        .title("Your current location: ${it.latitude}, ${it.longitude} ")
+                ).remove()
+                googleMapObject.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(it.latitude, it.longitude),
+                        18F
+                    )
                 )
-            )
-        })
+            }
+        )
     }
 
-    @SuppressLint("SetTextI18n")
+    private fun fetchLocationData() = firstScreenViewModel.locationData
+
+    private fun repoLocationConnection() = firstScreenViewModel.repoLocation
+
+    private fun repoResultConnection() = firstScreenViewModel.repoResult
+
+    private suspend fun performCheck() = repoResultConnection().performAction(requireContext())
+
     private suspend fun getStatus(result: String?) {
         if (result != null) {
             when (result) {
@@ -76,50 +84,54 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
                     result_title.text = isTrueLocationString()
                 }
                 else -> {
-                    result_title.text = "Error: Something went wrong"
+                    result_title.text = getString(R.string.error_checking_location_text)
                 }
             }
         } else {
-            result_title.text = "Empty database"
+            result_title.text = getString(R.string.empty_db_text)
         }
     }
 
     private fun startLocationUpdate() {
-        firstScreenViewModel.locationData.observe(viewLifecycleOwner, Observer {
+        fetchLocationData().observe(viewLifecycleOwner, Observer {
             longitude_value.text = it.longitude.toString()
             latitude_value.text = it.latitude.toString()
         })
     }
 
     private suspend fun addToDb(location: LocationModel) {
-        return firstScreenViewModel.repoLocation.insertAsFresh(location)
+        return repoLocationConnection().insertAsFresh(location)
     }
 
     private suspend fun isTrueLocation(): Boolean {
         val calculator = calculateDistance(
-            firstScreenViewModel.repoLocation.selectAll()!!.latitude,
-            firstScreenViewModel.repoLocation.selectAll()!!.longitude,
-            firstScreenViewModel.repoResult.selectAll().lat!!,
-            firstScreenViewModel.repoResult.selectAll().lng!!
+            repoLocationConnection().selectAll()!!.latitude,
+            repoLocationConnection().selectAll()!!.longitude,
+            repoResultConnection().selectAll().lat!!,
+            repoResultConnection().selectAll().lng!!
         )
         return isRealLocation(
             calculator,
-            firstScreenViewModel.repoResult.selectAll().accuracy!!
+            repoResultConnection().selectAll().accuracy!!
         )
     }
 
     private suspend fun isTrueLocationString(): String {
-        resultx = if (isTrueLocation()) {
-            "True Location"
+        return if (isTrueLocation()) {
+            getString(R.string.true_location_text)
         } else {
-            "Spoofed Location or too small sample size"
+            getString(R.string.spoofed_location_text)
         }
-        return resultx
     }
-
-    private suspend fun doCheck() = firstScreenViewModel.performCheck()
 
     @InternalCoroutinesApi
     private suspend fun checkStatusAfterAction() =
-        firstScreenViewModel.repoResult.checkLocationStatus()?.status
+        repoResultConnection().checkLocationStatus()?.status
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fetchLocationData().removeObservers(viewLifecycleOwner)
+    }
+
+
 }
