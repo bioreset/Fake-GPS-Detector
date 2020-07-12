@@ -38,7 +38,6 @@ class SecondScreenFragment : Fragment(R.layout.routers_list) {
                 updateItems(it)
             }
         )
-
     }
 
     private fun updateItems(routersList: List<ScanResult>? = null) {

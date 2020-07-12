@@ -5,13 +5,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.telephony.CellInfo
 import android.telephony.TelephonyManager
 import androidx.lifecycle.LiveData
 
-class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>?>() {
+class CellTowersTypeLiveData(private var context: Context) : LiveData<Int>() {
 
-    private val cellTowersScanResultsReceiver = object : BroadcastReceiver() {
+    private val cellTowersTypeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) = prepareCellScan()
     }
 
@@ -19,9 +18,7 @@ class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>
         get() = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
     @SuppressLint("MissingPermission")
-    private var allCellInfo = telephonyManager.allCellInfo
-
-    private var result: List<CellInfo>? = null
+    private var allCellInfo = telephonyManager.dataNetworkType
 
     override fun onActive() {
         registerReceiver()
@@ -32,9 +29,8 @@ class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>
         unregisterReceiver()
     }
 
-    private fun castData(): List<CellInfo>? {
-        result = allCellInfo
-        return result
+    private fun castData(): Int {
+        return allCellInfo
     }
 
     private fun prepareCellScan() {
@@ -43,14 +39,13 @@ class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>
 
     private fun registerReceiver() {
         context.registerReceiver(
-            cellTowersScanResultsReceiver,
+            cellTowersTypeReceiver,
             IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
         )
     }
 
     private fun unregisterReceiver() {
-        context.unregisterReceiver(cellTowersScanResultsReceiver)
+        context.unregisterReceiver(cellTowersTypeReceiver)
     }
 
 }
-

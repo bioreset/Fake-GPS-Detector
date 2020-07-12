@@ -9,13 +9,9 @@ import com.google.gson.GsonBuilder
 object CreateJSONRequest {
 
     suspend fun buildJSONRequest(context: Context): String {
-
         val cellData = getCellTowersRepository(context).selectAll()
-
         val routersData = getRoutersListRepository(context).selectAll()
-
         val gsonPretty = GsonBuilder().setPrettyPrinting().create()
-
         return if (cellData != null && routersData != null) {
             gsonPretty.toJson(
                 ApiRequestModel(
@@ -27,5 +23,4 @@ object CreateJSONRequest {
             ""
         }
     }
-
 }

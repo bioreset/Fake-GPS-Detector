@@ -1,13 +1,14 @@
 package com.dariusz.fakegpsdetector.ui.thirdscreen
 
 import android.os.Bundle
-import android.telephony.CellInfoLte
+import android.telephony.CellInfo
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dariusz.fakegpsdetector.R
-import com.dariusz.fakegpsdetector.model.CellTowerModel.Companion.newCellTowersList
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
+import com.dariusz.fakegpsdetector.utils.CellTowersUtils.detectCellTowerType
+import com.dariusz.fakegpsdetector.utils.CellTowersUtils.newCellTowersList
 import com.dariusz.fakegpsdetector.utils.Injectors
 import com.dariusz.fakegpsdetector.utils.ViewUtils.showOnFragment
 import kotlinx.android.synthetic.main.celltower_list.*
@@ -40,10 +41,15 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
         )
     }
 
-    private fun updateItems(cellTowersList: List<CellInfoLte>? = null) {
+    private fun updateItems(cellTowersList: List<CellInfo>? = null) {
         listAdapterCell?.clear()
         if (cellTowersList != null) {
-            listAdapterCell?.addAll(newCellTowersList(cellTowersList)!!)
+                newCellTowersList(
+                    detectCellTowerType(fetchCellTowersTypeData()),
+                    cellTowersList
+                )?.let {
+                    listAdapterCell?.addAll(it)
+                }
         }
         listAdapterCell?.notifyDataSetChanged()
 
@@ -51,11 +57,23 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
 
     private fun fetchNewCellTowerData() = thirdScreenViewModel.cellTowersData
 
+    private fun fetchCellTowersTypeData() = thirdScreenViewModel.cellTowersType.value
+
     private fun repoConnection() = thirdScreenViewModel.repo
 
-    private suspend fun addToDb(cellTowersList: List<CellInfoLte>?) {
-        if (cellTowersList != null) {
-            return repoConnection().insertAsFresh(newCellTowersList(cellTowersList)!!)
+    private suspend fun addToDb(cellTowersList: List<CellInfo>?): Unit? {
+        return if (cellTowersList != null) {
+             newCellTowersList(
+                detectCellTowerType(
+                    fetchCellTowersTypeData()
+                ), cellTowersList
+            )?.let {
+                repoConnection().insertAsFresh(
+                    it
+                )
+            }
+        } else {
+            null
         }
     }
 
