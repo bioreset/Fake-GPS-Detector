@@ -9,8 +9,10 @@ import com.dariusz.fakegpsdetector.utils.CreateJSONRequest.buildJSONRequest
 import com.dariusz.fakegpsdetector.utils.ManageResponse.manageResponse
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performApiCall
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
+import javax.inject.Inject
 
 class LocationFromApiResponseRepository
+@Inject
 constructor(
     private val fakeGPSRestApiService: FakeGPSRestApiService,
     private val locationFromApiResponse: LocationFromApiResponseDao
@@ -41,20 +43,4 @@ constructor(
     suspend fun checkLocationStatus() =
         performCacheCall(locationFromApiResponse.getLocationFromApiInfo()).asLiveData().value
 
-    companion object {
-
-        @Volatile
-        private var instance: LocationFromApiResponseRepository? = null
-
-        fun getInstance(
-            fakeGPSRestApiService: FakeGPSRestApiService,
-            locationFromApiResponse: LocationFromApiResponseDao
-        ) =
-            instance ?: synchronized(this) {
-                instance ?: LocationFromApiResponseRepository(
-                    fakeGPSRestApiService,
-                    locationFromApiResponse
-                ).also { instance = it }
-            }
-    }
 }

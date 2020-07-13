@@ -2,23 +2,27 @@ package com.dariusz.fakegpsdetector.ui
 
 import android.Manifest
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import com.dariusz.fakegpsdetector.datasource.GpsStatusLiveData
-import com.dariusz.fakegpsdetector.datasource.PermissionStatusLiveData
-import com.dariusz.fakegpsdetector.datasource.WifiStatusLiveData
+import com.dariusz.fakegpsdetector.di.DataSourceModule.provideGpsStatusLiveData
+import com.dariusz.fakegpsdetector.di.DataSourceModule.providePermissionStatusLiveData
+import com.dariusz.fakegpsdetector.di.DataSourceModule.provideWifiStatusLiveData
 
-class SharedViewModel(context: Context) : ViewModel() {
+class SharedViewModel
+@ViewModelInject
+constructor()
+ : ViewModel() {
 
-    val gpsStatus =
-        GpsStatusLiveData(context)
+    fun gpsStatus(context: Context) =
+        provideGpsStatusLiveData(context)
 
-    val permissionCheck =
-        PermissionStatusLiveData(
-            context,
-            listOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE)
+    fun permissionCheck(context: Context, permissionToWatch: List<String>) =
+        providePermissionStatusLiveData(
+            context, permissionToWatch
         )
 
-    val wifiStatusCheck =
-        WifiStatusLiveData(context)
+    fun wifiStatusCheck(context: Context) =
+        provideWifiStatusLiveData(context)
 
 }
+

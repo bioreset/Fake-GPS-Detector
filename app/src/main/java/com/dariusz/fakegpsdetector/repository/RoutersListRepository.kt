@@ -4,8 +4,10 @@ import androidx.lifecycle.asLiveData
 import com.dariusz.fakegpsdetector.db.dao.RoutersListDao
 import com.dariusz.fakegpsdetector.model.RoutersListModel
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
+import javax.inject.Inject
 
 class RoutersListRepository
+@Inject
 constructor(
     private val routersListDao: RoutersListDao
 ) {
@@ -20,18 +22,4 @@ constructor(
 
     private suspend fun deleteAll() = performCacheCall(routersListDao.deleteAllRouters())
 
-    companion object {
-
-        @Volatile
-        private var instance: RoutersListRepository? = null
-
-        fun getInstance(
-            routersListDao: RoutersListDao
-        ) =
-            instance ?: synchronized(this) {
-                instance ?: RoutersListRepository(
-                    routersListDao
-                ).also { instance = it }
-            }
-    }
 }

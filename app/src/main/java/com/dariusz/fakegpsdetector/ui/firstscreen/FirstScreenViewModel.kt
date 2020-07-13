@@ -1,21 +1,21 @@
 package com.dariusz.fakegpsdetector.ui.firstscreen
 
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import com.dariusz.fakegpsdetector.datasource.LocationLiveData
+import com.dariusz.fakegpsdetector.di.DataSourceModule.provideLocationLiveData
 import com.dariusz.fakegpsdetector.repository.LocationFromApiResponseRepository
 import com.dariusz.fakegpsdetector.repository.LocationRepository
 
-class FirstScreenViewModel(
-    context: Context,
+class FirstScreenViewModel
+@ViewModelInject
+constructor(
     locationRepository: LocationRepository,
     locationFromApiResponseRepository: LocationFromApiResponseRepository
 ) : ViewModel() {
 
-    val locationData =
-        LocationLiveData(
-            context
-        )
+    fun locationData(context: Context) =
+        provideLocationLiveData(context)
 
     val repoLocation = locationRepository
 

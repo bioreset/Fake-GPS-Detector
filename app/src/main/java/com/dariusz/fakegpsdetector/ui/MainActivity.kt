@@ -1,5 +1,6 @@
 package com.dariusz.fakegpsdetector.ui
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,14 +14,16 @@ import com.dariusz.fakegpsdetector.utils.DialogManager.dismissTheDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showGpsNotEnabledDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showPermissionsNeededDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showWifiAlertDialog
-import com.dariusz.fakegpsdetector.utils.Injectors
+import com.dariusz.fakegpsdetector.utils.Injectors.provideSharedViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: SharedViewModel by viewModels {
-        Injectors.provideSharedViewModelFactory(this)
+        provideSharedViewModelFactory()
     }
 
     private lateinit var firstScreenFragment: FirstScreenFragment
@@ -45,17 +48,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun subscribeToPermissionCheck() =
-        mainViewModel.permissionCheck.observe(this, Observer {
+        mainViewModel.permissionCheck(this@MainActivity,
+            listOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_PHONE_STATE)).observe(this, Observer {
             handleAlertPermissions(it.status)
         })
 
     private fun subscribeToGpsStatus() =
-        mainViewModel.gpsStatus.observe(this, Observer {
+        mainViewModel.gpsStatus(this@MainActivity).observe(this, Observer {
             handleAlertGps(it.status)
         })
 
     private fun subscribeToWifiStatus() =
-        mainViewModel.wifiStatusCheck.observe(this, Observer {
+        mainViewModel.wifiStatusCheck(this@MainActivity).observe(this, Observer {
             handleAlertWifi(it.status)
         })
 
@@ -66,9 +71,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun turnOffMain() {
-        mainViewModel.wifiStatusCheck.removeObservers(this@MainActivity)
-        mainViewModel.gpsStatus.removeObservers(this@MainActivity)
-        mainViewModel.permissionCheck.removeObservers(this@MainActivity)
+        mainViewModel.wifiStatusCheck(this@MainActivity).removeObservers(this@MainActivity)
+        mainViewModel.gpsStatus(this@MainActivity).removeObservers(this@MainActivity)
+        mainViewModel.permissionCheck(this@MainActivity,
+            listOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_PHONE_STATE)).removeObservers(this@MainActivity)
     }
 
     private fun goToFragment(selectedFragment: Fragment) {

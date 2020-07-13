@@ -1,15 +1,16 @@
 package com.dariusz.fakegpsdetector.ui
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import javax.inject.Inject
 
-class SharedViewModelFactory(
-    private val context: Context
+class SharedViewModelFactory
+@Inject
+constructor(
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return SharedViewModel(context) as T
+        return SharedViewModel() as T
     }
 }

@@ -1,8 +1,11 @@
 package com.dariusz.fakegpsdetector.utils
 
 import android.content.Context
-import com.dariusz.fakegpsdetector.api.FakeGPSRestApiService
-import com.dariusz.fakegpsdetector.db.init.FGDDatabase
+import com.dariusz.fakegpsdetector.di.CacheModule.provideCellTowersDAO
+import com.dariusz.fakegpsdetector.di.CacheModule.provideLocationDAO
+import com.dariusz.fakegpsdetector.di.CacheModule.provideLocationFromApiResponseDAO
+import com.dariusz.fakegpsdetector.di.CacheModule.provideRoutersListDAO
+import com.dariusz.fakegpsdetector.di.NetworkModule.provideRetrofitService
 import com.dariusz.fakegpsdetector.repository.CellTowersRepository
 import com.dariusz.fakegpsdetector.repository.LocationFromApiResponseRepository
 import com.dariusz.fakegpsdetector.repository.LocationRepository
@@ -15,41 +18,40 @@ import com.dariusz.fakegpsdetector.ui.thirdscreen.ThirdScreenViewModelFactory
 object Injectors {
 
     fun getCellTowersRepository(context: Context): CellTowersRepository {
-        return CellTowersRepository.getInstance(
-            FGDDatabase.getInstance(context.applicationContext).cellTowersDao()
+        return CellTowersRepository(
+            provideCellTowersDAO(context)
         )
     }
 
     fun getLocationFromApiResponseRepository(context: Context): LocationFromApiResponseRepository {
-        return LocationFromApiResponseRepository.getInstance(
-            FakeGPSRestApiService(),
-            FGDDatabase.getInstance(context.applicationContext).locationFromApiResponseDao()
+        return LocationFromApiResponseRepository(
+            provideRetrofitService(),
+            provideLocationFromApiResponseDAO(context)
         )
     }
 
     fun getLocationRepository(context: Context): LocationRepository {
-        return LocationRepository.getInstance(
-            FGDDatabase.getInstance(context.applicationContext).locationDao()
+        return LocationRepository(
+            provideLocationDAO(context)
         )
     }
 
+
     fun getRoutersListRepository(context: Context): RoutersListRepository {
-        return RoutersListRepository.getInstance(
-            FGDDatabase.getInstance(context.applicationContext).routersListDao()
+        return RoutersListRepository(
+            provideRoutersListDAO(context)
         )
     }
 
     fun provideSharedViewModelFactory(
-        context: Context
     ): SharedViewModelFactory {
-        return SharedViewModelFactory(context)
+        return SharedViewModelFactory()
     }
 
     fun provideFirstScreenViewModelFactory(
         context: Context
     ): FirstScreenViewModelFactory {
         return FirstScreenViewModelFactory(
-            context,
             getLocationRepository(context),
             getLocationFromApiResponseRepository(context)
         )
@@ -58,14 +60,13 @@ object Injectors {
     fun provideSecondScreenViewModelFactory(
         context: Context
     ): SecondScreenViewModelFactory {
-        return SecondScreenViewModelFactory(context, getRoutersListRepository(context))
+        return SecondScreenViewModelFactory(getRoutersListRepository(context))
     }
 
     fun provideThirdScreenViewModelFactory(
         context: Context
     ): ThirdScreenViewModelFactory {
-        return ThirdScreenViewModelFactory(context, getCellTowersRepository(context))
+        return ThirdScreenViewModelFactory(getCellTowersRepository(context))
     }
-
 
 }

@@ -2,12 +2,12 @@ package com.dariusz.fakegpsdetector.db.init
 
 import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.dariusz.fakegpsdetector.db.dao.CellTowersDao
 import com.dariusz.fakegpsdetector.db.dao.LocationDao
 import com.dariusz.fakegpsdetector.db.dao.LocationFromApiResponseDao
 import com.dariusz.fakegpsdetector.db.dao.RoutersListDao
+import com.dariusz.fakegpsdetector.di.CacheModule.buildDatabase
 import com.dariusz.fakegpsdetector.model.ApiResponseModel
 import com.dariusz.fakegpsdetector.model.CellTowerModel
 import com.dariusz.fakegpsdetector.model.LocationModel
@@ -37,11 +37,6 @@ abstract class FGDDatabase : RoomDatabase() {
                         context
                     ).also { instance = it }
             }
-        }
-
-        private fun buildDatabase(context: Context): FGDDatabase {
-            return Room.databaseBuilder(context, FGDDatabase::class.java, "fgd_database_official")
-                .build()
         }
 
     }

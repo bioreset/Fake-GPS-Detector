@@ -8,16 +8,18 @@ import androidx.fragment.app.viewModels
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.RoutersListModel.Companion.newRoutersList
 import com.dariusz.fakegpsdetector.ui.adapters.RoutersListAdapter
-import com.dariusz.fakegpsdetector.utils.Injectors
+import com.dariusz.fakegpsdetector.utils.Injectors.provideSecondScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.showOnFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.routers_list.*
 
+@AndroidEntryPoint
 class SecondScreenFragment : Fragment(R.layout.routers_list) {
 
     private var listAdapterWifi: RoutersListAdapter? = null
 
     private val secondScreenViewModel: SecondScreenViewModel by viewModels {
-        Injectors.provideSecondScreenViewModelFactory(requireContext())
+        provideSecondScreenViewModelFactory(requireContext())
     }
 
     @Override
@@ -54,7 +56,7 @@ class SecondScreenFragment : Fragment(R.layout.routers_list) {
         }
     }
 
-    private fun fetchNewRoutersData() = secondScreenViewModel.wifiData
+    private fun fetchNewRoutersData() = secondScreenViewModel.wifiData(requireContext())
 
     private fun repoConnection() = secondScreenViewModel.repo
 

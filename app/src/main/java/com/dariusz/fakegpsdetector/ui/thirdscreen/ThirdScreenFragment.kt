@@ -9,16 +9,18 @@ import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
 import com.dariusz.fakegpsdetector.utils.CellTowersUtils.detectCellTowerType
 import com.dariusz.fakegpsdetector.utils.CellTowersUtils.newCellTowersList
-import com.dariusz.fakegpsdetector.utils.Injectors
+import com.dariusz.fakegpsdetector.utils.Injectors.provideThirdScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.showOnFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.celltower_list.*
 
+@AndroidEntryPoint
 class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
 
     private var listAdapterCell: CellTowersListAdapter? = null
 
     private val thirdScreenViewModel: ThirdScreenViewModel by viewModels {
-        Injectors.provideThirdScreenViewModelFactory(requireContext())
+        provideThirdScreenViewModelFactory(requireContext())
     }
 
     @Override
@@ -55,9 +57,9 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
 
     }
 
-    private fun fetchNewCellTowerData() = thirdScreenViewModel.cellTowersData
+    private fun fetchNewCellTowerData() = thirdScreenViewModel.cellTowersData(requireContext())
 
-    private fun fetchCellTowersTypeData() = thirdScreenViewModel.cellTowersType.value
+    private fun fetchCellTowersTypeData() = thirdScreenViewModel.cellTowersType(requireContext()).value
 
     private fun repoConnection() = thirdScreenViewModel.repo
 

@@ -9,7 +9,7 @@ import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.LocationModel
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.calculateDistance
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.isRealLocation
-import com.dariusz.fakegpsdetector.utils.Injectors
+import com.dariusz.fakegpsdetector.utils.Injectors.provideFirstScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutine
 import com.dariusz.fakegpsdetector.utils.ViewUtils.showOnFragment
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -18,13 +18,15 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.homescreen.*
 import kotlinx.coroutines.InternalCoroutinesApi
 
+@AndroidEntryPoint
 class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
 
     private val firstScreenViewModel: FirstScreenViewModel by viewModels {
-        Injectors.provideFirstScreenViewModelFactory(requireContext())
+        provideFirstScreenViewModelFactory(requireContext())
     }
 
     private lateinit var googleMapObject: GoogleMap
@@ -69,7 +71,7 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         )
     }
 
-    private fun fetchLocationData() = firstScreenViewModel.locationData
+    private fun fetchLocationData() = firstScreenViewModel.locationData(requireContext())
 
     private fun repoLocationConnection() = firstScreenViewModel.repoLocation
 
