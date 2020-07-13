@@ -51,6 +51,4 @@ class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>
     private fun unregisterReceiver() {
         context.unregisterReceiver(cellTowersScanResultsReceiver)
     }
-
 }
-

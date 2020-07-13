@@ -21,5 +21,4 @@ constructor(
         performCacheCall(routersListDao.getAllRouters()).asLiveData().value
 
     private suspend fun deleteAll() = performCacheCall(routersListDao.deleteAllRouters())
-
 }

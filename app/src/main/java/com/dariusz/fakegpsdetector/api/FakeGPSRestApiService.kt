@@ -5,5 +5,4 @@ interface FakeGPSRestApiService {
     suspend fun checkCurrentLocation(
         jsonBody: String
     ): String
-
 }

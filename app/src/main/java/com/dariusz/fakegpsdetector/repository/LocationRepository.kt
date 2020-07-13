@@ -20,5 +20,4 @@ constructor(
     suspend fun selectAll() = performCacheCall(locationDao.getLocation()).asLiveData().value
 
     private suspend fun deleteAll() = performCacheCall(locationDao.deleteAllLocationInfo())
-
 }

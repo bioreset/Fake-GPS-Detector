@@ -20,6 +20,4 @@ constructor(
     val repoLocation = locationRepository
 
     val repoResult = locationFromApiResponseRepository
-
-
 }

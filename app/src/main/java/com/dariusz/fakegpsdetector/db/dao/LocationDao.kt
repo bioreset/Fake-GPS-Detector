@@ -17,5 +17,4 @@ interface LocationDao {
 
     @Query("SELECT * FROM location")
     suspend fun getLocation(): LocationModel
-
 }

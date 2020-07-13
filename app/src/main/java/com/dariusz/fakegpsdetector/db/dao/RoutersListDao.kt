@@ -7,7 +7,6 @@ import com.dariusz.fakegpsdetector.model.RoutersListModel
 interface RoutersListDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    @JvmSuppressWildcards
     suspend fun insertAll(cellTowerList: List<RoutersListModel>)
 
     @Query("DELETE FROM routers_table")
@@ -16,5 +15,4 @@ interface RoutersListDao {
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT id, macAddress, frequency, level FROM routers_table ")
     suspend fun getAllRouters(): List<RoutersListModel>
-
 }

@@ -15,12 +15,15 @@ object ViewUtils {
         actionInCoroutine: suspend (T?) -> Unit,
         actionOnMain: (T?) -> Unit
     ) {
-        return liveData.observe(lifecycleOwner, Observer {
-            lifecycleOwner.lifecycle.coroutineScope.launch {
-                actionInCoroutine.invoke(liveData.value)
+        return liveData.observe(
+            lifecycleOwner,
+            Observer {
+                lifecycleOwner.lifecycle.coroutineScope.launch {
+                    actionInCoroutine.invoke(liveData.value)
+                }
+                actionOnMain.invoke(liveData.value)
             }
-            actionOnMain.invoke(liveData.value)
-        })
+        )
     }
 
     fun performActionInsideCoroutine(
@@ -31,5 +34,4 @@ object ViewUtils {
             action.invoke()
         }
     }
-
 }

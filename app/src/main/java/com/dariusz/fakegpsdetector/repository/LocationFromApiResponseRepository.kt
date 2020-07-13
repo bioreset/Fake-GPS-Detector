@@ -42,5 +42,4 @@ constructor(
 
     suspend fun checkLocationStatus() =
         performCacheCall(locationFromApiResponse.getLocationFromApiInfo()).asLiveData().value
-
 }

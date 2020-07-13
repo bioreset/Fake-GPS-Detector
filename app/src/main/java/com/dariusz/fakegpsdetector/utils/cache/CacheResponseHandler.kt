@@ -1,5 +1,7 @@
 package com.dariusz.fakegpsdetector.utils.cache
 
+import com.dariusz.fakegpsdetector.utils.ErrorHandling.handleError
+
 object CacheResponseHandler {
 
     @Suppress("UNCHECKED_CAST")
@@ -7,13 +9,12 @@ object CacheResponseHandler {
         return when (response) {
 
             is CacheStatus.CacheError -> {
-                ("cache-error: " + "Unknown Cache Error") as T
+                handleError("cache-error", "Unknown Cache Error") as T
             }
 
             is CacheStatus.Success -> {
-                response.value ?: ("cache-error: " + "Data is empty") as T
+                response.value ?: handleError("cache-error", "Data is empty") as T
             }
         }
     }
-
 }

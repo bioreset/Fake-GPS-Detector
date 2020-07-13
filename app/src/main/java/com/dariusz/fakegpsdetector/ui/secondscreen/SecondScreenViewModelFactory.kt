@@ -1,6 +1,5 @@
 package com.dariusz.fakegpsdetector.ui.secondscreen
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.dariusz.fakegpsdetector.repository.RoutersListRepository

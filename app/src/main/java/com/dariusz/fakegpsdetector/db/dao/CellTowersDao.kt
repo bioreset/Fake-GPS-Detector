@@ -7,7 +7,6 @@ import com.dariusz.fakegpsdetector.model.CellTowerModel
 interface CellTowersDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    @JvmSuppressWildcards
     suspend fun insertAll(cellTowerList: List<CellTowerModel>)
 
     @Query("DELETE FROM celltowers_table")
@@ -16,5 +15,4 @@ interface CellTowersDao {
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT id, cellId, locationAreaCode, mobileCountryCode, mobileNetworkCode, signalStrength FROM celltowers_table ")
     suspend fun getAllCellTowers(): List<CellTowerModel>
-
 }

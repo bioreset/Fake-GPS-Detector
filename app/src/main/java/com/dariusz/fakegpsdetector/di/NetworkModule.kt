@@ -39,5 +39,4 @@ object NetworkModule {
     fun provideRetrofitService(): FakeGPSRestApiService {
         return FakeGPSRestApiServiceImpl()
     }
-
 }

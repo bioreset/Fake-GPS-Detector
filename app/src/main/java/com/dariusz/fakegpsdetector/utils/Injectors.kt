@@ -36,15 +36,13 @@ object Injectors {
         )
     }
 
-
     fun getRoutersListRepository(context: Context): RoutersListRepository {
         return RoutersListRepository(
             provideRoutersListDAO(context)
         )
     }
 
-    fun provideSharedViewModelFactory(
-    ): SharedViewModelFactory {
+    fun provideSharedViewModelFactory(): SharedViewModelFactory {
         return SharedViewModelFactory()
     }
 
@@ -68,5 +66,4 @@ object Injectors {
     ): ThirdScreenViewModelFactory {
         return ThirdScreenViewModelFactory(getCellTowersRepository(context))
     }
-
 }

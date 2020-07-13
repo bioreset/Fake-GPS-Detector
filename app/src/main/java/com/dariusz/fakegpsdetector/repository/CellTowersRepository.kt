@@ -21,5 +21,4 @@ constructor(
         performCacheCall(cellTowersDao.getAllCellTowers()).asLiveData().value
 
     private suspend fun deleteAll() = performCacheCall(cellTowersDao.deleteAllCellTowers())
-
 }

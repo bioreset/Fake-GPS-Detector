@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: "org.jmailen.kotlinter"
 
 android {
     compileSdkVersion 29
@@ -65,4 +66,13 @@ dependencies {
 
 kapt {
     correctErrorTypes true
+}
+
+kotlinter {
+    ignoreFailures = false
+    indentSize = 4
+    reporters = ['checkstyle', 'plain']
+    experimentalRules = false
+    disabledRules = []
+    fileBatchSize = 30
 }

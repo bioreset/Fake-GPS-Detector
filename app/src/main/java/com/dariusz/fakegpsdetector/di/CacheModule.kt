@@ -48,6 +48,4 @@ object CacheModule {
     fun provideRoutersListDAO(@ApplicationContext context: Context): RoutersListDao {
         return FGDDatabase.getInstance(context.applicationContext).routersListDao()
     }
-
-
 }

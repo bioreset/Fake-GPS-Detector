@@ -28,5 +28,4 @@ class CellTowersListAdapter(context: Context) : ArrayAdapter<CellTowerModel>(con
             context.getString(R.string.station_level, item?.signalStrength.toString())
         return view
     }
-
 }

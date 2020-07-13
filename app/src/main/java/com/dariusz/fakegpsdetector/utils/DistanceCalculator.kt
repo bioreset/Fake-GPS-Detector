@@ -40,5 +40,4 @@ object DistanceCalculator {
         }
         return result
     }
-
 }

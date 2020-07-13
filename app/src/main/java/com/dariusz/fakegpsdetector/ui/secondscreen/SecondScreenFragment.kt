@@ -76,7 +76,4 @@ class SecondScreenFragment : Fragment(R.layout.routers_list) {
         fetchNewRoutersData().removeObservers(viewLifecycleOwner)
         routerlist.adapter = null
     }
-
 }
-
-

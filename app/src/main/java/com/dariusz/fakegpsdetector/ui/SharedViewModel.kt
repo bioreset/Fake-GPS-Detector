@@ -1,6 +1,5 @@
 package com.dariusz.fakegpsdetector.ui
 
-import android.Manifest
 import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
@@ -10,8 +9,8 @@ import com.dariusz.fakegpsdetector.di.DataSourceModule.provideWifiStatusLiveData
 
 class SharedViewModel
 @ViewModelInject
-constructor()
- : ViewModel() {
+constructor() :
+    ViewModel() {
 
     fun gpsStatus(context: Context) =
         provideGpsStatusLiveData(context)
@@ -23,6 +22,4 @@ constructor()
 
     fun wifiStatusCheck(context: Context) =
         provideWifiStatusLiveData(context)
-
 }
-

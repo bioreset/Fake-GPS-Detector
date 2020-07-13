@@ -17,5 +17,4 @@ interface LocationFromApiResponseDao {
 
     @Query("SELECT * FROM locationfromapix_table")
     suspend fun getLocationFromApiInfo(): ApiResponseModel
-
 }

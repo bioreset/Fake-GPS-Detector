@@ -95,10 +95,13 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
     }
 
     private fun startLocationUpdate() {
-        fetchLocationData().observe(viewLifecycleOwner, Observer {
-            longitude_value.text = it.longitude.toString()
-            latitude_value.text = it.latitude.toString()
-        })
+        fetchLocationData().observe(
+            viewLifecycleOwner,
+            Observer {
+                longitude_value.text = it.longitude.toString()
+                latitude_value.text = it.latitude.toString()
+            }
+        )
     }
 
     private suspend fun addToDb(location: LocationModel) {
@@ -134,6 +137,4 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         super.onDestroyView()
         fetchLocationData().removeObservers(viewLifecycleOwner)
     }
-
-
 }

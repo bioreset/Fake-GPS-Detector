@@ -25,5 +25,4 @@ data class CellTowerModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Int = 0
-
 }

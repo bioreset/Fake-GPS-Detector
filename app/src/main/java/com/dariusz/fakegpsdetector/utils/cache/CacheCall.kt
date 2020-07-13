@@ -1,5 +1,6 @@
 package com.dariusz.fakegpsdetector.utils.cache
 
+import com.dariusz.fakegpsdetector.utils.ErrorHandling.handleError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -13,9 +14,13 @@ object CacheCall {
             try {
                 CacheStatus.Success(cacheCall.invoke())
             } catch (throwable: Throwable) {
-                CacheStatus.CacheError("generic-error: " + "Unknown Error")
+                CacheStatus.CacheError(
+                    handleError(
+                        "generic",
+                        "Unknown Error"
+                    )
+                )
             }
         }
     }
 }
-

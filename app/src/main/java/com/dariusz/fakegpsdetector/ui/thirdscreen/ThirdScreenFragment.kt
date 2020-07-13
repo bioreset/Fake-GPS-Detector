@@ -46,15 +46,14 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
     private fun updateItems(cellTowersList: List<CellInfo>? = null) {
         listAdapterCell?.clear()
         if (cellTowersList != null) {
-                newCellTowersList(
-                    detectCellTowerType(fetchCellTowersTypeData()),
-                    cellTowersList
-                )?.let {
-                    listAdapterCell?.addAll(it)
-                }
+            newCellTowersList(
+                detectCellTowerType(fetchCellTowersTypeData()),
+                cellTowersList
+            )?.let {
+                listAdapterCell?.addAll(it)
+            }
         }
         listAdapterCell?.notifyDataSetChanged()
-
     }
 
     private fun fetchNewCellTowerData() = thirdScreenViewModel.cellTowersData(requireContext())
@@ -65,10 +64,11 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
 
     private suspend fun addToDb(cellTowersList: List<CellInfo>?): Unit? {
         return if (cellTowersList != null) {
-             newCellTowersList(
+            newCellTowersList(
                 detectCellTowerType(
                     fetchCellTowersTypeData()
-                ), cellTowersList
+                ),
+                cellTowersList
             )?.let {
                 repoConnection().insertAsFresh(
                     it
@@ -95,6 +95,4 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
         fetchNewCellTowerData().removeObservers(viewLifecycleOwner)
         celltowerlist.adapter = null
     }
-
-
 }

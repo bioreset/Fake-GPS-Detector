@@ -26,5 +26,4 @@ class RoutersListAdapter(context: Context) : ArrayAdapter<RoutersListModel>(cont
 
         return view
     }
-
 }

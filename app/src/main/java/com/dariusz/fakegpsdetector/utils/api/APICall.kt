@@ -1,5 +1,6 @@
 package com.dariusz.fakegpsdetector.utils.api
 
+import com.dariusz.fakegpsdetector.utils.ErrorHandling.handleError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okio.IOException
@@ -19,7 +20,7 @@ object APICall {
                 when (throwable) {
                     is IOException -> {
                         APIStatus.NetworkError(
-                            "api-network-error: I/O EXCEPTION"
+                            handleError("api-network-error", "I/O Exception")
                         )
                     }
                     is HttpException -> {
@@ -29,13 +30,15 @@ object APICall {
                                 throwable
                             )
                         APIStatus.APIError(
-                            "api-http-error: " +
-                                    "Error code: $code; Error response: $errorResponse"
+                            handleError(
+                                "api-http-error",
+                                "Error code: $code; Error response: $errorResponse"
+                            )
                         )
                     }
                     else -> {
                         APIStatus.APIError(
-                            "api-error: " + "Unknown Error"
+                            handleError("api-error", "Unknown Error")
                         )
                     }
                 }
@@ -50,6 +53,4 @@ object APICall {
             "Unknown error"
         }
     }
-
-
 }

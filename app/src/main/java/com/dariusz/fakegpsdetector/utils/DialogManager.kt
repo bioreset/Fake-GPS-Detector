@@ -66,5 +66,4 @@ object DialogManager {
     }
 
     fun dismissTheDialog(dialog: AlertDialog) = dialog.dismiss()
-
 }

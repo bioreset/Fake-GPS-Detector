@@ -9,5 +9,4 @@ interface FakeGPSRestApi {
     @Headers("Content-Type: application/json")
     @POST("geolocation/v1/geolocate")
     suspend fun checkLocation(@Body params: String, @Query("key") key: String): String
-
 }

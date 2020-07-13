@@ -38,8 +38,5 @@ abstract class FGDDatabase : RoomDatabase() {
                     ).also { instance = it }
             }
         }
-
     }
-
-
 }

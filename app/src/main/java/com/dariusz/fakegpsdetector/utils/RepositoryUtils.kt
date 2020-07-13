@@ -19,5 +19,4 @@ object RepositoryUtils {
         val safeCall = safeCacheCall(IO) { call }
         emit(getResultFromCache(safeCall)!!)
     }
-
 }

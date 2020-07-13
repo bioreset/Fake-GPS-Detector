@@ -54,5 +54,4 @@ object DataSourceModule {
     fun provideWifiStatusLiveData(@ApplicationContext context: Context): WifiStatusLiveData {
         return WifiStatusLiveData(context)
     }
-
 }

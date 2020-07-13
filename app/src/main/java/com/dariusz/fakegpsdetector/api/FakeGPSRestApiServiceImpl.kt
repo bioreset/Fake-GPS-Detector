@@ -9,5 +9,4 @@ class FakeGPSRestApiServiceImpl : FakeGPSRestApiService {
         jsonBody: String
     ): String =
         provideFakeGPSRestApiService(provideRetrofit()).checkLocation(jsonBody, "AIzaSyCkZcvE_QrR-PCCpBP1g-LgrIOywhqSuAU")
-
 }

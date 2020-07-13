@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         nav_view.setOnNavigationItemSelectedListener(navListener())
 
         launchMain()
-
     }
 
     override fun onDestroy() {
@@ -48,21 +47,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun subscribeToPermissionCheck() =
-        mainViewModel.permissionCheck(this@MainActivity,
-            listOf(Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.READ_PHONE_STATE)).observe(this, Observer {
-            handleAlertPermissions(it.status)
-        })
+        mainViewModel.permissionCheck(
+            this@MainActivity,
+            listOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_PHONE_STATE
+            )
+        ).observe(
+            this,
+            Observer {
+                handleAlertPermissions(it.status)
+            }
+        )
 
     private fun subscribeToGpsStatus() =
-        mainViewModel.gpsStatus(this@MainActivity).observe(this, Observer {
-            handleAlertGps(it.status)
-        })
+        mainViewModel.gpsStatus(this@MainActivity).observe(
+            this,
+            Observer {
+                handleAlertGps(it.status)
+            }
+        )
 
     private fun subscribeToWifiStatus() =
-        mainViewModel.wifiStatusCheck(this@MainActivity).observe(this, Observer {
-            handleAlertWifi(it.status)
-        })
+        mainViewModel.wifiStatusCheck(this@MainActivity).observe(
+            this,
+            Observer {
+                handleAlertWifi(it.status)
+            }
+        )
 
     private fun launchMain() {
         subscribeToPermissionCheck()
@@ -73,9 +85,13 @@ class MainActivity : AppCompatActivity() {
     private fun turnOffMain() {
         mainViewModel.wifiStatusCheck(this@MainActivity).removeObservers(this@MainActivity)
         mainViewModel.gpsStatus(this@MainActivity).removeObservers(this@MainActivity)
-        mainViewModel.permissionCheck(this@MainActivity,
-            listOf(Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.READ_PHONE_STATE)).removeObservers(this@MainActivity)
+        mainViewModel.permissionCheck(
+            this@MainActivity,
+            listOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_PHONE_STATE
+            )
+        ).removeObservers(this@MainActivity)
     }
 
     private fun goToFragment(selectedFragment: Fragment) {
@@ -108,7 +124,6 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-
     private fun handleAlertPermissions(status: Boolean) {
         when (status) {
             false -> showPermissionsNeededDialog(this@MainActivity)
@@ -129,6 +144,4 @@ class MainActivity : AppCompatActivity() {
             true -> dismissTheDialog(showWifiAlertDialog(this@MainActivity))
         }
     }
-
-
 }

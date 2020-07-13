@@ -47,5 +47,4 @@ class CellTowersTypeLiveData(private var context: Context) : LiveData<Int>() {
     private fun unregisterReceiver() {
         context.unregisterReceiver(cellTowersTypeReceiver)
     }
-
 }
