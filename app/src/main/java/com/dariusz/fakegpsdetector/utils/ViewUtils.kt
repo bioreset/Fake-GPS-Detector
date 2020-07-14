@@ -9,11 +9,11 @@ import kotlinx.coroutines.launch
 
 object ViewUtils {
 
-    fun <T> showOnFragment(
+    fun <T> performActionInsideCoroutineWithLiveData(
         liveData: LiveData<T>,
         lifecycleOwner: LifecycleOwner,
-        actionInCoroutine: suspend (T?) -> Unit,
-        actionOnMain: (T?) -> Unit
+        actionInCoroutine: suspend (T?) -> Unit?,
+        actionOnMain: (T?) -> Unit?
     ) {
         return liveData.observe(
             lifecycleOwner,

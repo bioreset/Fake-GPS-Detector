@@ -39,7 +39,10 @@ object DataSourceModule {
 
     @Singleton
     @Provides
-    fun providePermissionStatusLiveData(@ApplicationContext context: Context, permissionsToListen: List<String>): PermissionStatusLiveData {
+    fun providePermissionStatusLiveData(
+        @ApplicationContext context: Context,
+        permissionsToListen: List<String>
+    ): PermissionStatusLiveData {
         return PermissionStatusLiveData(context, permissionsToListen)
     }
 

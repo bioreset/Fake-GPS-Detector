@@ -8,5 +8,8 @@ class FakeGPSRestApiServiceImpl : FakeGPSRestApiService {
     override suspend fun checkCurrentLocation(
         jsonBody: String
     ): String =
-        provideFakeGPSRestApiService(provideRetrofit()).checkLocation(jsonBody, "AIzaSyCkZcvE_QrR-PCCpBP1g-LgrIOywhqSuAU")
+        provideFakeGPSRestApiService(provideRetrofit()).checkLocation(
+            jsonBody,
+            "AIzaSyCkZcvE_QrR-PCCpBP1g-LgrIOywhqSuAU"
+        )
 }

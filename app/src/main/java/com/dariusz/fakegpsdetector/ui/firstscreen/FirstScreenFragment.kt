@@ -11,7 +11,7 @@ import com.dariusz.fakegpsdetector.utils.DistanceCalculator.calculateDistance
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.isRealLocation
 import com.dariusz.fakegpsdetector.utils.Injectors.provideFirstScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutine
-import com.dariusz.fakegpsdetector.utils.ViewUtils.showOnFragment
+import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -49,7 +49,7 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMapObject = googleMap!!
 
-        showOnFragment(
+        performActionInsideCoroutineWithLiveData(
             fetchLocationData(),
             viewLifecycleOwner,
             actionInCoroutine = {
