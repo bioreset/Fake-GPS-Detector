@@ -1,11 +1,13 @@
 package com.dariusz.fakegpsdetector.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class ApiRequestModel(
-    @SerializedName("wifiAccessPoints")
+    @field:Json(name = "wifiAccessPoints")
     val routersList: List<RoutersListModel>,
-    @SerializedName("cellTowers")
+    @field:Json(name = "cellTowers")
     val cellTowersList: List<CellTowerModel>
 
 )

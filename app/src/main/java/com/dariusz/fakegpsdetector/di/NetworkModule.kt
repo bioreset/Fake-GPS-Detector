@@ -27,14 +27,12 @@ object NetworkModule {
             .build()
     }
 
-    @Singleton
     @Provides
     fun provideFakeGPSRestApiService(retrofit: Retrofit): FakeGPSRestApi {
         return retrofit
             .create(FakeGPSRestApi::class.java)
     }
 
-    @Singleton
     @Provides
     fun provideRetrofitService(): FakeGPSRestApiService {
         return FakeGPSRestApiServiceImpl()

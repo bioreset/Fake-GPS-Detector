@@ -4,19 +4,23 @@ import android.net.wifi.ScanResult
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 @Entity(tableName = "routers_table")
 data class RoutersListModel(
     @ColumnInfo(name = "ssid")
+    @field:Json(name = "ssid")
     val ssid: String?,
     @ColumnInfo(name = "macAddress")
-    @SerializedName("macAddress")
+    @field:Json(name = "macAddress")
     val macAddress: String? = null,
     @ColumnInfo(name = "frequency")
+    @field:Json(name = "frequency")
     val frequency: Int? = null,
     @ColumnInfo(name = "level")
-    @SerializedName("signalStrength")
+    @field:Json(name = "level")
     val level: Int? = null
 ) {
     @PrimaryKey(autoGenerate = true)

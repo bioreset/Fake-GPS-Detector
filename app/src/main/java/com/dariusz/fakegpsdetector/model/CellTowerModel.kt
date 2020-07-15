@@ -3,21 +3,23 @@ package com.dariusz.fakegpsdetector.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 @Entity(tableName = "celltowers_table")
 data class CellTowerModel(
     @ColumnInfo(name = "cellId")
-    @SerializedName("cellId")
+    @field:Json(name = "cellId")
     val cellId: Int,
     @ColumnInfo(name = "locationAreaCode")
-    @SerializedName("locationAreaCode")
+    @field:Json(name = "locationAreaCode")
     val locationAreaCode: Int,
     @ColumnInfo(name = "mobileCountryCode")
-    @SerializedName("mobileCountryCode")
+    @field:Json(name = "mobileCountryCode")
     val mobileCountryCode: String?,
     @ColumnInfo(name = "mobileNetworkCode")
-    @SerializedName("mobileNetworkCode")
+    @field:Json(name = "mobileNetworkCode")
     val mobileNetworkCode: String?,
     @ColumnInfo(name = "signalStrength")
     val signalStrength: Int?
