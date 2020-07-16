@@ -9,10 +9,10 @@ import android.telephony.CellInfo
 import android.telephony.TelephonyManager
 import androidx.lifecycle.LiveData
 
-class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>?>() {
+class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>>() {
 
     private val cellTowersScanResultsReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) = prepareCellScan()
+        override fun onReceive(context: Context, intent: Intent) = onCellInfoChange()
     }
 
     private val telephonyManager: TelephonyManager
@@ -21,24 +21,17 @@ class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>
     @SuppressLint("MissingPermission")
     private var allCellInfo = telephonyManager.allCellInfo
 
-    private var result: List<CellInfo>? = null
-
     override fun onActive() {
         registerReceiver()
-        prepareCellScan()
+        postValue(allCellInfo)
     }
 
     override fun onInactive() {
         unregisterReceiver()
     }
 
-    private fun castData(): List<CellInfo>? {
-        result = allCellInfo
-        return result
-    }
-
-    private fun prepareCellScan() {
-        postValue(castData())
+    private fun onCellInfoChange() {
+        allCellInfo
     }
 
     private fun registerReceiver() {

@@ -11,7 +11,7 @@ import androidx.lifecycle.LiveData
 class CellTowersTypeLiveData(private var context: Context) : LiveData<Int>() {
 
     private val cellTowersTypeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) = prepareCellScan()
+        override fun onReceive(context: Context, intent: Intent) = onCellInfoChange()
     }
 
     private val telephonyManager: TelephonyManager
@@ -22,19 +22,15 @@ class CellTowersTypeLiveData(private var context: Context) : LiveData<Int>() {
 
     override fun onActive() {
         registerReceiver()
-        prepareCellScan()
+        postValue(allCellInfo)
     }
 
     override fun onInactive() {
         unregisterReceiver()
     }
 
-    private fun castData(): Int {
-        return allCellInfo
-    }
-
-    private fun prepareCellScan() {
-        postValue(castData())
+    private fun onCellInfoChange() {
+        allCellInfo
     }
 
     private fun registerReceiver() {

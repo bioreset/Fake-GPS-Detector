@@ -18,7 +18,9 @@ import com.dariusz.fakegpsdetector.utils.Injectors.provideSharedViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 

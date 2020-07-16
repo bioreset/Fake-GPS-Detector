@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.LocationModel
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.calculateDistance
@@ -22,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.homescreen.*
 import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 @AndroidEntryPoint
 class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
 
@@ -110,14 +112,14 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
 
     private suspend fun isTrueLocation(): Boolean {
         val calculator = calculateDistance(
-            repoLocationConnection().selectAll()!!.latitude,
-            repoLocationConnection().selectAll()!!.longitude,
-            repoResultConnection().selectAll().lat!!,
-            repoResultConnection().selectAll().lng!!
+            repoLocationConnection().selectAll().asLiveData().value?.latitude ?: 0.0,
+            repoLocationConnection().selectAll().asLiveData().value?.longitude ?: 0.0,
+            repoResultConnection().selectAll().asLiveData().value?.lat ?: 0.0,
+            repoResultConnection().selectAll().asLiveData().value?.lng ?: 0.0
         )
         return isRealLocation(
             calculator,
-            repoResultConnection().selectAll().accuracy!!
+            repoResultConnection().selectAll().asLiveData().value?.accuracy ?: 0
         )
     }
 
@@ -129,9 +131,8 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         }
     }
 
-    @InternalCoroutinesApi
     private suspend fun checkStatusAfterAction() =
-        repoResultConnection().checkLocationStatus()?.status
+        repoResultConnection().checkLocationStatus().asLiveData().value?.status
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -1,6 +1,5 @@
 package com.dariusz.fakegpsdetector.repository
 
-import androidx.lifecycle.asLiveData
 import com.dariusz.fakegpsdetector.db.dao.CellTowersDao
 import com.dariusz.fakegpsdetector.model.CellTowerModel
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
@@ -18,7 +17,7 @@ constructor(
     }
 
     suspend fun selectAll() =
-        performCacheCall(cellTowersDao.getAllCellTowers()).asLiveData().value
+        performCacheCall(cellTowersDao.getAllCellTowers())
 
     private suspend fun deleteAll() = performCacheCall(cellTowersDao.deleteAllCellTowers())
 }
