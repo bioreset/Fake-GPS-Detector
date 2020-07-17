@@ -14,7 +14,9 @@ import com.dariusz.fakegpsdetector.ui.SharedViewModelFactory
 import com.dariusz.fakegpsdetector.ui.firstscreen.FirstScreenViewModelFactory
 import com.dariusz.fakegpsdetector.ui.secondscreen.SecondScreenViewModelFactory
 import com.dariusz.fakegpsdetector.ui.thirdscreen.ThirdScreenViewModelFactory
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 object Injectors {
 
     fun getCellTowersRepository(context: Context): CellTowersRepository {

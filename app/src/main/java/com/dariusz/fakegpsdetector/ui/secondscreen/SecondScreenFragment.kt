@@ -12,7 +12,9 @@ import com.dariusz.fakegpsdetector.utils.Injectors.provideSecondScreenViewModelF
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.routers_list.*
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 @AndroidEntryPoint
 class SecondScreenFragment : Fragment(R.layout.routers_list) {
 

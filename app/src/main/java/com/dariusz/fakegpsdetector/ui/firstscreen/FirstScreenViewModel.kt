@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.dariusz.fakegpsdetector.di.DataSourceModule.provideLocationLiveData
 import com.dariusz.fakegpsdetector.repository.LocationFromApiResponseRepository
 import com.dariusz.fakegpsdetector.repository.LocationRepository
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 class FirstScreenViewModel
 @ViewModelInject
 constructor(

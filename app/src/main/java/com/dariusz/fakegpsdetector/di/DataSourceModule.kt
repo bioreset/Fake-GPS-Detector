@@ -21,12 +21,6 @@ object DataSourceModule {
 
     @Singleton
     @Provides
-    fun provideCellTowersTypeLiveData(@ApplicationContext context: Context): CellTowersTypeLiveData {
-        return CellTowersTypeLiveData(context)
-    }
-
-    @Singleton
-    @Provides
     fun provideGpsStatusLiveData(@ApplicationContext context: Context): GpsStatusLiveData {
         return GpsStatusLiveData(context)
     }

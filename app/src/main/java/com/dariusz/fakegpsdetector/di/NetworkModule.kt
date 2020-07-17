@@ -18,18 +18,13 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(): FakeGPSRestApi {
         val client = OkHttpClient.Builder().build()
         return Retrofit.Builder()
             .baseUrl("https://www.googleapis.com/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .client(client)
             .build()
-    }
-
-    @Provides
-    fun provideFakeGPSRestApiService(retrofit: Retrofit): FakeGPSRestApi {
-        return retrofit
             .create(FakeGPSRestApi::class.java)
     }
 

@@ -41,7 +41,7 @@ constructor(
             return@collectTheFlow it
         }
     }
-    
+
     suspend fun performAction(context: Context) =
         manageResponse(
             checkCurrentLocationOfTheDevice(buildJSONRequest(context))

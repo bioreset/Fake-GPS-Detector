@@ -5,23 +5,20 @@ import android.telephony.CellInfo
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.dariusz.fakegpsdetector.R
-import com.dariusz.fakegpsdetector.model.CellTowerType
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
-import com.dariusz.fakegpsdetector.utils.CellTowersUtils.detectCellTowerType
-import com.dariusz.fakegpsdetector.utils.CellTowersUtils.newCellTowersList
+import com.dariusz.fakegpsdetector.utils.CellTowersUtils.mapCellTowers
 import com.dariusz.fakegpsdetector.utils.Injectors.provideThirdScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.celltower_list.*
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 @AndroidEntryPoint
 class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
 
     private var listAdapterCell: CellTowersListAdapter? = null
-
-    private var networkType: CellTowerType? = null
 
     private val thirdScreenViewModel: ThirdScreenViewModel by viewModels {
         provideThirdScreenViewModelFactory(requireContext())
@@ -45,45 +42,22 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
                 updateItems(it)
             }
         )
-
-        fetchCellTowersTypeData().observe(
-            viewLifecycleOwner,
-            Observer {
-                networkType = detectCellTowerType(it)
-            }
-        )
     }
 
     private fun fetchNewCellTowerData() = thirdScreenViewModel.cellTowersData(requireContext())
 
-    private fun fetchCellTowersTypeData() = thirdScreenViewModel.cellTowersType(requireContext())
-
     private fun repoConnection() = thirdScreenViewModel.repo
 
-    private suspend fun addToDb(cellTowersList: List<CellInfo>?): Unit? {
-        return if (cellTowersList != null) {
-            newCellTowersList(
-                networkType,
-                cellTowersList
-            )?.let {
-                repoConnection().insertAsFresh(
-                    it
-                )
-            }
-        } else {
-            null
+    private suspend fun addToDb(cellTowersList: List<CellInfo>?) {
+        if (cellTowersList != null) {
+            repoConnection().insertAsFresh(mapCellTowers(cellTowersList))
         }
     }
 
     private fun updateItems(cellTowersList: List<CellInfo>? = null) {
         listAdapterCell?.clear()
         if (cellTowersList != null) {
-            newCellTowersList(
-                networkType,
-                cellTowersList
-            )?.let {
-                listAdapterCell?.addAll(it)
-            }
+            listAdapterCell?.addAll(mapCellTowers(cellTowersList))
         }
         listAdapterCell?.notifyDataSetChanged()
     }
@@ -102,7 +76,6 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
     override fun onDestroyView() {
         super.onDestroyView()
         fetchNewCellTowerData().removeObservers(viewLifecycleOwner)
-        fetchCellTowersTypeData().removeObservers(viewLifecycleOwner)
         celltowerlist.adapter = null
     }
 }

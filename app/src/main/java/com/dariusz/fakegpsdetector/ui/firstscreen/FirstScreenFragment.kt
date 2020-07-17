@@ -58,14 +58,13 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
                 addToDb(it!!)
             },
             actionOnMain = {
-                it!!
                 googleMapObject.addMarker(
-                    MarkerOptions().position(LatLng(it.latitude, it.longitude))
-                        .title("Your current location: ${it.latitude}, ${it.longitude} ")
+                    MarkerOptions().position(LatLng(it!!.latitude, it!!.longitude))
+                        .title("Your current location: ${it!!.latitude}, ${it!!.longitude} ")
                 ).remove()
                 googleMapObject.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(
-                        LatLng(it.latitude, it.longitude),
+                        LatLng(it!!.latitude, it!!.longitude),
                         18F
                     )
                 )

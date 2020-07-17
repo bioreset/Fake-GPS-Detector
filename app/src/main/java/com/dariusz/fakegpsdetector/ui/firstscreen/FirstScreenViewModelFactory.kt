@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.dariusz.fakegpsdetector.repository.LocationFromApiResponseRepository
 import com.dariusz.fakegpsdetector.repository.LocationRepository
+import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Inject
 
+@InternalCoroutinesApi
 class FirstScreenViewModelFactory
 @Inject
 constructor(

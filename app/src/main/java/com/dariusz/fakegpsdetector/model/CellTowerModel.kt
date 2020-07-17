@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
 data class CellTowerModel(
     @ColumnInfo(name = "cellId")
     @field:Json(name = "cellId")
-    val cellId: Int,
+    val cellId: String,
     @ColumnInfo(name = "locationAreaCode")
     @field:Json(name = "locationAreaCode")
     val locationAreaCode: Int,
