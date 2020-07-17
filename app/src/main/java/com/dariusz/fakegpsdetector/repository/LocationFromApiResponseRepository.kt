@@ -4,13 +4,14 @@ import android.content.Context
 import com.dariusz.fakegpsdetector.api.FakeGPSRestApiService
 import com.dariusz.fakegpsdetector.db.dao.LocationFromApiResponseDao
 import com.dariusz.fakegpsdetector.model.ApiResponseModel
+import com.dariusz.fakegpsdetector.utils.FlowUtils.collectTheFlow
+import com.dariusz.fakegpsdetector.utils.FlowUtils.scrapeDataFromResponse
 import com.dariusz.fakegpsdetector.utils.ManageResponse.buildJSONRequest
 import com.dariusz.fakegpsdetector.utils.ManageResponse.manageResponse
-import com.dariusz.fakegpsdetector.utils.RepositoryUtils.collectTheFlow
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performApiCall
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
-import com.dariusz.fakegpsdetector.utils.RepositoryUtils.scrapeDataFromResponse
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 @InternalCoroutinesApi
@@ -21,7 +22,7 @@ constructor(
     private val locationFromApiResponse: LocationFromApiResponseDao
 ) {
 
-    suspend fun insert(apiResponse: ApiResponseModel) {
+    suspend fun insert(apiResponse: ApiResponseModel) = flow<Unit> {
         deleteAll()
         performCacheCall(locationFromApiResponse.insert(apiResponse))
     }
@@ -33,13 +34,12 @@ constructor(
         performCacheCall(locationFromApiResponse.deleteAllLocationFromApiRecords())
 
     private suspend fun checkCurrentLocationOfTheDevice(body: String): ApiResponseModel? {
-        val scrapedData = performApiCall(fakeGPSRestApiService.checkCurrentLocation(body))
+        val scrapedData =
+            collectTheFlow(performApiCall(fakeGPSRestApiService.checkCurrentLocation(body)))
         val apiResponseModel = ApiResponseModel::class.java
         return collectTheFlow(
-            scrapeDataFromResponse(scrapedData.toString(), apiResponseModel)
-        ) {
-            return@collectTheFlow it
-        }
+            scrapeDataFromResponse(scrapedData, apiResponseModel)
+        )
     }
 
     suspend fun performAction(context: Context) =

@@ -1,5 +1,6 @@
 package com.dariusz.fakegpsdetector.di
 
+import android.content.Context
 import com.dariusz.fakegpsdetector.api.FakeGPSRestApi
 import com.dariusz.fakegpsdetector.api.FakeGPSRestApiService
 import com.dariusz.fakegpsdetector.api.FakeGPSRestApiServiceImpl
@@ -7,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -29,7 +31,7 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideRetrofitService(): FakeGPSRestApiService {
-        return FakeGPSRestApiServiceImpl()
+    fun provideRetrofitService(@ApplicationContext context: Context): FakeGPSRestApiService {
+        return FakeGPSRestApiServiceImpl(context)
     }
 }

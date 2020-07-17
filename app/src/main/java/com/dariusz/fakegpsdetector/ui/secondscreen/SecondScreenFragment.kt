@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.RoutersListModel.Companion.newRoutersList
 import com.dariusz.fakegpsdetector.ui.adapters.RoutersListAdapter
+import com.dariusz.fakegpsdetector.utils.FlowUtils.collectTheFlow
 import com.dariusz.fakegpsdetector.utils.Injectors.provideSecondScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,15 +53,20 @@ class SecondScreenFragment : Fragment(R.layout.routers_list) {
         listAdapterWifi?.notifyDataSetChanged()
     }
 
-    private suspend fun addToDb(routersList: List<ScanResult>?) {
-        if (routersList != null) {
-            repoConnection().insertAsFresh(newRoutersList(routersList))
+    private suspend fun addToDb(routersList: List<ScanResult>?): Unit? {
+        return if (routersList != null) {
+            insertData(routersList)
+        } else {
+            null
         }
     }
 
     private fun fetchNewRoutersData() = secondScreenViewModel.wifiData(requireContext())
 
     private fun repoConnection() = secondScreenViewModel.repo
+
+    private suspend fun insertData(routersList: List<ScanResult>) =
+        collectTheFlow(repoConnection().insertAsFresh(newRoutersList(routersList)))
 
     private fun restoreList() {
         fetchNewRoutersData().value?.let {

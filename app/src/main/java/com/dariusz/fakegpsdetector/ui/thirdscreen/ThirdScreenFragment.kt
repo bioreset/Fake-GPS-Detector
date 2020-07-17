@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
 import com.dariusz.fakegpsdetector.utils.CellTowersUtils.mapCellTowers
+import com.dariusz.fakegpsdetector.utils.FlowUtils.collectTheFlow
 import com.dariusz.fakegpsdetector.utils.Injectors.provideThirdScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,9 +49,14 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
 
     private fun repoConnection() = thirdScreenViewModel.repo
 
-    private suspend fun addToDb(cellTowersList: List<CellInfo>?) {
-        if (cellTowersList != null) {
-            repoConnection().insertAsFresh(mapCellTowers(cellTowersList))
+    private suspend fun insertData(cellTowersList: List<CellInfo>?) =
+        collectTheFlow(repoConnection().insertAsFresh(mapCellTowers(cellTowersList)))
+
+    private suspend fun addToDb(cellTowersList: List<CellInfo>?): Unit? {
+        return if (cellTowersList != null) {
+            insertData(cellTowersList)
+        } else {
+            null
         }
     }
 
@@ -69,8 +75,8 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
     }
 
     override fun onResume() {
-        restoreList()
         super.onResume()
+        restoreList()
     }
 
     override fun onDestroyView() {

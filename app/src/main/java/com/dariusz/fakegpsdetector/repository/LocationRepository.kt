@@ -3,6 +3,7 @@ package com.dariusz.fakegpsdetector.repository
 import com.dariusz.fakegpsdetector.db.dao.LocationDao
 import com.dariusz.fakegpsdetector.model.LocationModel
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class LocationRepository
@@ -11,7 +12,7 @@ constructor(
     private val locationDao: LocationDao
 ) {
 
-    suspend fun insertAsFresh(location: LocationModel) {
+    suspend fun insertAsFresh(location: LocationModel) = flow<Unit> {
         deleteAll()
         performCacheCall(locationDao.insert(location))
     }

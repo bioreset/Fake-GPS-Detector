@@ -27,7 +27,7 @@ object Injectors {
 
     fun getLocationFromApiResponseRepository(context: Context): LocationFromApiResponseRepository {
         return LocationFromApiResponseRepository(
-            provideRetrofitService(),
+            provideRetrofitService(context),
             provideLocationFromApiResponseDAO(context)
         )
     }

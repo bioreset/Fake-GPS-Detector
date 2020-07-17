@@ -1,21 +1,21 @@
 package com.dariusz.fakegpsdetector.ui
 
 import android.Manifest
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.ui.firstscreen.FirstScreenFragment
-import com.dariusz.fakegpsdetector.ui.secondscreen.SecondScreenFragment
-import com.dariusz.fakegpsdetector.ui.thirdscreen.ThirdScreenFragment
 import com.dariusz.fakegpsdetector.utils.DialogManager.dismissTheDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showGpsNotEnabledDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showPermissionsNeededDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showWifiAlertDialog
 import com.dariusz.fakegpsdetector.utils.Injectors.provideSharedViewModelFactory
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.dariusz.fakegpsdetector.utils.NavigationSetup.goToFragment
+import com.dariusz.fakegpsdetector.utils.NavigationSetup.navListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -28,122 +28,91 @@ class MainActivity : AppCompatActivity() {
         provideSharedViewModelFactory()
     }
 
-    private lateinit var firstScreenFragment: FirstScreenFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        firstScreenFragment = FirstScreenFragment()
-
-        goToFragment(firstScreenFragment)
-
-        nav_view.setOnNavigationItemSelectedListener(navListener())
-
-        launchMain()
+        initNavigation()
+        launchMain(this@MainActivity)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        turnOffMain()
+        turnOffMain(this@MainActivity)
     }
 
-    private fun subscribeToPermissionCheck() =
+    private fun subscribeToPermissionCheck(context: Context) =
         mainViewModel.permissionCheck(
-            this@MainActivity,
+            context,
             listOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.READ_PHONE_STATE
             )
         ).observe(
-            this,
+            context as LifecycleOwner,
             Observer {
-                handleAlertPermissions(it.status)
+                handleAlertPermissions(context, it.status)
             }
         )
 
-    private fun subscribeToGpsStatus() =
-        mainViewModel.gpsStatus(this@MainActivity).observe(
-            this,
+    private fun subscribeToGpsStatus(context: Context) =
+        mainViewModel.gpsStatus(context).observe(
+            context as LifecycleOwner,
             Observer {
-                handleAlertGps(it.status)
+                handleAlertGps(context, it.status)
             }
         )
 
-    private fun subscribeToWifiStatus() =
-        mainViewModel.wifiStatusCheck(this@MainActivity).observe(
-            this,
+    private fun subscribeToWifiStatus(context: Context) =
+        mainViewModel.wifiStatusCheck(context).observe(
+            context as LifecycleOwner,
             Observer {
-                handleAlertWifi(it.status)
+                handleAlertWifi(context, it.status)
             }
         )
 
-    private fun launchMain() {
-        subscribeToPermissionCheck()
-        subscribeToGpsStatus()
-        subscribeToWifiStatus()
+    private fun launchMain(context: Context) {
+        subscribeToPermissionCheck(context)
+        subscribeToGpsStatus(context)
+        subscribeToWifiStatus(context)
     }
 
-    private fun turnOffMain() {
-        mainViewModel.wifiStatusCheck(this@MainActivity).removeObservers(this@MainActivity)
-        mainViewModel.gpsStatus(this@MainActivity).removeObservers(this@MainActivity)
+    private fun initNavigation() {
+        return supportFragmentManager.let {
+            goToFragment(it, FirstScreenFragment())
+            nav_view.setOnNavigationItemSelectedListener(navListener(it))
+        }
+    }
+
+    private fun turnOffMain(context: Context) {
+        mainViewModel.wifiStatusCheck(context).removeObservers(context as LifecycleOwner)
+        mainViewModel.gpsStatus(context).removeObservers(context as LifecycleOwner)
         mainViewModel.permissionCheck(
-            this@MainActivity,
+            context,
             listOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.READ_PHONE_STATE
             )
-        ).removeObservers(this@MainActivity)
+        ).removeObservers(context as LifecycleOwner)
     }
 
-    private fun goToFragment(selectedFragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, selectedFragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    private fun navListener(): BottomNavigationView.OnNavigationItemSelectedListener =
-        BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
-            val selectedFragment: Fragment
-            when (menuItem.itemId) {
-                R.id.navigation_homescreen -> {
-                    selectedFragment = FirstScreenFragment()
-                    goToFragment(selectedFragment)
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.navigation_routers -> {
-                    selectedFragment = SecondScreenFragment()
-                    goToFragment(selectedFragment)
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.navigation_celltowers -> {
-                    selectedFragment = ThirdScreenFragment()
-                    goToFragment(selectedFragment)
-                    return@OnNavigationItemSelectedListener true
-                }
-            }
-            false
-        }
-
-    private fun handleAlertPermissions(status: Boolean) {
+    private fun handleAlertPermissions(context: Context, status: Boolean) {
         when (status) {
-            false -> showPermissionsNeededDialog(this@MainActivity)
-            true -> dismissTheDialog(showPermissionsNeededDialog(this@MainActivity))
+            false -> showPermissionsNeededDialog(context)
+            true -> dismissTheDialog(showPermissionsNeededDialog(context))
         }
     }
 
-    private fun handleAlertGps(status: Boolean) {
+    private fun handleAlertGps(context: Context, status: Boolean) {
         when (status) {
-            false -> showGpsNotEnabledDialog(this@MainActivity)
-            true -> dismissTheDialog(showGpsNotEnabledDialog(this@MainActivity))
+            false -> showGpsNotEnabledDialog(context)
+            true -> dismissTheDialog(showGpsNotEnabledDialog(context))
         }
     }
 
-    private fun handleAlertWifi(status: Boolean) {
+    private fun handleAlertWifi(context: Context, status: Boolean) {
         when (status) {
-            false -> showWifiAlertDialog(this@MainActivity)
-            true -> dismissTheDialog(showWifiAlertDialog(this@MainActivity))
+            false -> showWifiAlertDialog(context)
+            true -> dismissTheDialog(showWifiAlertDialog(context))
         }
     }
 }

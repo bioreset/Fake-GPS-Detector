@@ -3,6 +3,7 @@ package com.dariusz.fakegpsdetector.repository
 import com.dariusz.fakegpsdetector.db.dao.CellTowersDao
 import com.dariusz.fakegpsdetector.model.CellTowerModel
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class CellTowersRepository
@@ -11,7 +12,7 @@ constructor(
     private val cellTowersDao: CellTowersDao
 ) {
 
-    suspend fun insertAsFresh(cellTowerList: List<CellTowerModel>) {
+    suspend fun insertAsFresh(cellTowerList: List<CellTowerModel>) = flow<Unit> {
         deleteAll()
         performCacheCall(cellTowersDao.insertAll(cellTowerList))
     }

@@ -1,15 +1,17 @@
 package com.dariusz.fakegpsdetector.api
 
+import android.content.Context
 import com.dariusz.fakegpsdetector.di.NetworkModule.provideRetrofit
-import com.dariusz.fakegpsdetector.model.ApiResponseModel
+import com.dariusz.fakegpsdetector.utils.ManageResponse.buildJSONRequest
+import kotlinx.coroutines.InternalCoroutinesApi
 
-class FakeGPSRestApiServiceImpl : FakeGPSRestApiService {
+class FakeGPSRestApiServiceImpl(private val context: Context) : FakeGPSRestApiService {
 
+    @InternalCoroutinesApi
     override suspend fun checkCurrentLocation(
         jsonBody: String
-    ): ApiResponseModel =
+    ): String =
         provideRetrofit().checkLocation(
-            jsonBody,
-            "AIzaSyCkZcvE_QrR-PCCpBP1g-LgrIOywhqSuAU"
+            buildJSONRequest(context)
         )
 }
