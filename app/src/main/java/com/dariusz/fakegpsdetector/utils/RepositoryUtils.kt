@@ -5,20 +5,18 @@ import com.dariusz.fakegpsdetector.utils.api.APIResponseHandler.getResultFromAPI
 import com.dariusz.fakegpsdetector.utils.cache.CacheCall.safeCacheCall
 import com.dariusz.fakegpsdetector.utils.cache.CacheResponseHandler.getResultFromCache
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 object RepositoryUtils {
 
-    fun <T> performApiCall(call: T): Flow<T> = flow {
+    suspend fun <T> performApiCall(call: T): T? {
         val safeCall = safeApiCall(IO) { call }
-        val safeResult = getResultFromAPI(safeCall)!!
-        emit(safeResult)
+        return getResultFromAPI(safeCall)
     }
 
-    fun <T> performCacheCall(call: T?): Flow<T> = flow {
+    suspend fun <T> performCacheCall(call: T): T? {
         val safeCall = safeCacheCall(IO) { call }
-        val safeResult = getResultFromCache(safeCall)!!
-        emit(safeResult)
+        return getResultFromCache(safeCall)
     }
 }

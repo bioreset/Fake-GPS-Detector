@@ -5,10 +5,10 @@ import android.telephony.CellInfo
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.distinctUntilChanged
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
 import com.dariusz.fakegpsdetector.utils.CellTowersUtils.mapCellTowers
-import com.dariusz.fakegpsdetector.utils.FlowUtils.collectTheFlow
 import com.dariusz.fakegpsdetector.utils.Injectors.provideThirdScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +34,7 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
         celltowerlist.adapter = listAdapterCell
 
         performActionInsideCoroutineWithLiveData(
-            fetchNewCellTowerData(),
+            fetchNewCellTowerData().distinctUntilChanged(),
             viewLifecycleOwner,
             actionInCoroutine = {
                 addToDb(it)
@@ -50,13 +50,11 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
     private fun repoConnection() = thirdScreenViewModel.repo
 
     private suspend fun insertData(cellTowersList: List<CellInfo>?) =
-        collectTheFlow(repoConnection().insertAsFresh(mapCellTowers(cellTowersList)))
+        repoConnection().insertAsFresh(mapCellTowers(cellTowersList))
 
-    private suspend fun addToDb(cellTowersList: List<CellInfo>?): Unit? {
-        return if (cellTowersList != null) {
+    private suspend fun addToDb(cellTowersList: List<CellInfo>?) {
+        if (cellTowersList != null) {
             insertData(cellTowersList)
-        } else {
-            null
         }
     }
 

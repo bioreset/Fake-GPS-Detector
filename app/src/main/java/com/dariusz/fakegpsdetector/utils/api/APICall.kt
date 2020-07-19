@@ -2,7 +2,9 @@ package com.dariusz.fakegpsdetector.utils.api
 
 import com.dariusz.fakegpsdetector.utils.ErrorHandling.handleError
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import okio.IOException
 import retrofit2.HttpException
 
@@ -10,14 +12,24 @@ object APICall {
 
     suspend fun <T> safeApiCall(
         dispatcher: CoroutineDispatcher,
-        apiCall: suspend () -> T?
+        apiCall: suspend () -> T
     ): APIStatus<T?> {
         return withContext(dispatcher) {
             try {
-                APIStatus.Success(apiCall.invoke())
+                withTimeout(6000) {
+                    APIStatus.Success(apiCall.invoke())
+                }
             } catch (throwable: Throwable) {
                 throwable.printStackTrace()
                 when (throwable) {
+                    is TimeoutCancellationException -> {
+                        APIStatus.NetworkError(
+                            handleError(
+                                "api-network-error",
+                                "TimeoutCancellationException Exception"
+                            )
+                        )
+                    }
                     is IOException -> {
                         APIStatus.NetworkError(
                             handleError("api-network-error", "I/O Exception")

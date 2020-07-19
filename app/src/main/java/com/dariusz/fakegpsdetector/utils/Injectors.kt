@@ -19,26 +19,26 @@ import kotlinx.coroutines.InternalCoroutinesApi
 @InternalCoroutinesApi
 object Injectors {
 
-    fun getCellTowersRepository(context: Context): CellTowersRepository {
+    private fun getCellTowersRepository(context: Context): CellTowersRepository {
         return CellTowersRepository(
             provideCellTowersDAO(context)
         )
     }
 
-    fun getLocationFromApiResponseRepository(context: Context): LocationFromApiResponseRepository {
+    private fun getLocationFromApiResponseRepository(context: Context): LocationFromApiResponseRepository {
         return LocationFromApiResponseRepository(
-            provideRetrofitService(context),
+            provideRetrofitService(),
             provideLocationFromApiResponseDAO(context)
         )
     }
 
-    fun getLocationRepository(context: Context): LocationRepository {
+    private fun getLocationRepository(context: Context): LocationRepository {
         return LocationRepository(
             provideLocationDAO(context)
         )
     }
 
-    fun getRoutersListRepository(context: Context): RoutersListRepository {
+    private fun getRoutersListRepository(context: Context): RoutersListRepository {
         return RoutersListRepository(
             provideRoutersListDAO(context)
         )

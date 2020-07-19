@@ -23,7 +23,7 @@ object CellTowersUtils {
 
     private fun newCellTowersListLte(cltwm: CellInfoLte): CellTowerModel? {
         return CellTowerModel(
-            cellId = cltwm.cellIdentity.ci.toString() + " (LTE)",
+            cellId = cltwm.cellIdentity.ci.toString(),
             locationAreaCode = cltwm.cellIdentity.tac,
             mobileCountryCode = cltwm.cellIdentity.mccString,
             mobileNetworkCode = cltwm.cellIdentity.mncString,
@@ -33,7 +33,7 @@ object CellTowersUtils {
 
     private fun newCellTowersListGsm(cltwm: CellInfoGsm): CellTowerModel? {
         return CellTowerModel(
-            cellId = cltwm.cellIdentity.cid.toString() + " (GSM)",
+            cellId = cltwm.cellIdentity.cid.toString(),
             locationAreaCode = cltwm.cellIdentity.lac,
             mobileCountryCode = cltwm.cellIdentity.mccString,
             mobileNetworkCode = cltwm.cellIdentity.mncString,
@@ -43,7 +43,7 @@ object CellTowersUtils {
 
     private fun newCellTowersListWcdma(cltwm: CellInfoWcdma): CellTowerModel? {
         return CellTowerModel(
-            cellId = cltwm.cellIdentity.cid.toString() + " (WCDMA)",
+            cellId = cltwm.cellIdentity.cid.toString(),
             locationAreaCode = cltwm.cellIdentity.lac,
             mobileCountryCode = cltwm.cellIdentity.mccString,
             mobileNetworkCode = cltwm.cellIdentity.mncString,
@@ -53,7 +53,7 @@ object CellTowersUtils {
 
     private fun newCellTowersListCdma(cltwm: CellInfoCdma): CellTowerModel? {
         return CellTowerModel(
-            cellId = cltwm.cellIdentity.basestationId.toString() + " (CDMA)",
+            cellId = cltwm.cellIdentity.basestationId.toString(),
             locationAreaCode = cltwm.cellIdentity.latitude + cltwm.cellIdentity.longitude,
             mobileCountryCode = cltwm.cellIdentity.systemId.toString(),
             mobileNetworkCode = cltwm.cellIdentity.networkId.toString(),

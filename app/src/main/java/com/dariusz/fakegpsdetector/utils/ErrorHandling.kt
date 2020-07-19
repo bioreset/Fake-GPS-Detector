@@ -11,6 +11,9 @@ object ErrorHandling {
     }
 
     private fun errorAsLog(errorHandle: ErrorContent): Int {
-        return Log.e("APPLICATION-DEBUG-ERROR: ", "$errorHandle")
+        return Log.e(
+            "Error handling detected some problems: ",
+            "Error type: ${errorHandle.errorType}, Error message: ${errorHandle.errorMessage}"
+        )
     }
 }

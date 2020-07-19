@@ -13,6 +13,6 @@ interface CellTowersDao {
     suspend fun deleteAllCellTowers()
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT id, cellId, locationAreaCode, mobileCountryCode, mobileNetworkCode, signalStrength FROM celltowers_table ")
+    @Query("SELECT id, cellId, locationAreaCode, mobileCountryCode, mobileNetworkCode, signalStrength FROM celltowers_table;")
     suspend fun getAllCellTowers(): List<CellTowerModel>
 }

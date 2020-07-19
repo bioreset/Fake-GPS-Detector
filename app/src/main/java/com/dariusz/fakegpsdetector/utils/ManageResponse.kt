@@ -1,13 +1,6 @@
 package com.dariusz.fakegpsdetector.utils
 
-import android.content.Context
-import androidx.lifecycle.asLiveData
-import com.dariusz.fakegpsdetector.model.ApiRequestModel
-import com.dariusz.fakegpsdetector.model.ApiResponseModel
-import com.dariusz.fakegpsdetector.utils.FlowUtils.collectTheFlow
-import com.dariusz.fakegpsdetector.utils.FlowUtils.scrapeDataFromResponse
-import com.dariusz.fakegpsdetector.utils.Injectors.getCellTowersRepository
-import com.dariusz.fakegpsdetector.utils.Injectors.getRoutersListRepository
+import com.dariusz.fakegpsdetector.model.*
 import com.dariusz.fakegpsdetector.utils.RepositoryUtils.performCacheCall
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -19,27 +12,40 @@ object ManageResponse {
     private val moshi: Moshi = Moshi.Builder().build()
 
     suspend fun manageResponse(
-        response: ApiResponseModel?,
-        cacheCall: suspend (ApiResponseModel) -> Unit
+        response: String,
+        cacheCall: suspend (ApiResponseModelJson) -> Unit?
     ) =
-        performCacheCall(parseJSON(response.toString()).let { cacheCall.invoke(it) })
+        performCacheCall(
+            response.let {
+                parseResponse(it)?.let { it2 ->
+                    cacheCall.invoke(
+                        it2
+                    )
+                }
+            }
+        )
 
-    suspend fun buildJSONRequest(context: Context): String {
-        val cellData = getCellTowersRepository(context).selectAll().asLiveData().value
-        val routersData = getRoutersListRepository(context).selectAll().asLiveData().value
+    fun buildJSONRequest(
+        cellData: List<CellTowerModel>?,
+        routersData: List<RoutersListModel>?
+    ): String {
+        val apiRequest = ApiRequestModel(routersData, cellData)
         val adapter: JsonAdapter<ApiRequestModel> = moshi.adapter(ApiRequestModel::class.java)
-        return if (cellData != null && routersData != null) {
-            adapter.toJson(
-                ApiRequestModel(
-                    cellTowersList = cellData,
-                    routersList = routersData
-                )
-            )
-        } else {
-            ""
-        }
+        return adapter.toJson(apiRequest)
     }
 
-    private suspend fun parseJSON(response: String) =
-        collectTheFlow(scrapeDataFromResponse(response, ApiResponseModel::class.java))
+    private fun parseResponse(response: String): ApiResponseModelJson? {
+        val adapter: JsonAdapter<ApiResponseModelJson> =
+            moshi.adapter(ApiResponseModelJson::class.java)
+        return adapter.fromJson(response)
+    }
+
+    fun asResponseToDb(response: ApiResponseModelJson): ApiResponseModel {
+        return ApiResponseModel(
+            status = "location",
+            lat = response.location.lat,
+            lng = response.location.lng,
+            accuracy = response.accuracy
+        )
+    }
 }

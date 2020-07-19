@@ -19,27 +19,27 @@ object CacheModule {
 
     @Provides
     fun buildDatabase(@ApplicationContext context: Context): FGDDatabase {
-        return Room.databaseBuilder(context, FGDDatabase::class.java, "fgd_database_official")
+        return Room.databaseBuilder(context, FGDDatabase::class.java, "fgd_database_main")
             .build()
     }
 
     @Provides
     fun provideCellTowersDAO(@ApplicationContext context: Context): CellTowersDao {
-        return buildDatabase(context.applicationContext).cellTowersDao()
+        return buildDatabase(context).cellTowersDao()
     }
 
     @Provides
     fun provideLocationDAO(@ApplicationContext context: Context): LocationDao {
-        return buildDatabase(context.applicationContext).locationDao()
+        return buildDatabase(context).locationDao()
     }
 
     @Provides
     fun provideLocationFromApiResponseDAO(@ApplicationContext context: Context): LocationFromApiResponseDao {
-        return buildDatabase(context.applicationContext).locationFromApiResponseDao()
+        return buildDatabase(context).locationFromApiResponseDao()
     }
 
     @Provides
     fun provideRoutersListDAO(@ApplicationContext context: Context): RoutersListDao {
-        return buildDatabase(context.applicationContext).routersListDao()
+        return buildDatabase(context).routersListDao()
     }
 }

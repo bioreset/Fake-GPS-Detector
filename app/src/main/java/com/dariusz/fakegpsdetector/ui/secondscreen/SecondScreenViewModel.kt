@@ -5,7 +5,9 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.dariusz.fakegpsdetector.di.DataSourceModule.provideWifiScanResultsLiveData
 import com.dariusz.fakegpsdetector.repository.RoutersListRepository
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 class SecondScreenViewModel
 @ViewModelInject
 constructor(

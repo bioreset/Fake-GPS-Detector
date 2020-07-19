@@ -15,6 +15,6 @@ interface LocationFromApiResponseDao {
     @Query("DELETE FROM locationfromapix_table")
     suspend fun deleteAllLocationFromApiRecords()
 
-    @Query("SELECT * FROM locationfromapix_table")
+    @Query("SELECT * FROM locationfromapix_table;")
     suspend fun getLocationFromApiInfo(): ApiResponseModel
 }

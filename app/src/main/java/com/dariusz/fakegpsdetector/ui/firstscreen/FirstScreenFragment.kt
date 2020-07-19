@@ -5,11 +5,16 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dariusz.fakegpsdetector.R
+import com.dariusz.fakegpsdetector.model.CellTowerModel
 import com.dariusz.fakegpsdetector.model.LocationModel
+import com.dariusz.fakegpsdetector.model.RoutersListModel
+import com.dariusz.fakegpsdetector.ui.secondscreen.SecondScreenViewModel
+import com.dariusz.fakegpsdetector.ui.thirdscreen.ThirdScreenViewModel
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.calculateDistance
 import com.dariusz.fakegpsdetector.utils.DistanceCalculator.isRealLocation
-import com.dariusz.fakegpsdetector.utils.FlowUtils.collectTheFlow
 import com.dariusz.fakegpsdetector.utils.Injectors.provideFirstScreenViewModelFactory
+import com.dariusz.fakegpsdetector.utils.Injectors.provideSecondScreenViewModelFactory
+import com.dariusz.fakegpsdetector.utils.Injectors.provideThirdScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutine
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -30,7 +35,19 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         provideFirstScreenViewModelFactory(requireContext())
     }
 
+    private val secondScreenViewModel: SecondScreenViewModel by viewModels {
+        provideSecondScreenViewModelFactory(requireContext())
+    }
+
+    private val thirdScreenViewModel: ThirdScreenViewModel by viewModels {
+        provideThirdScreenViewModelFactory(requireContext())
+    }
+
     private var googleMapObject: GoogleMap? = null
+
+    private var routersList: List<RoutersListModel> = ArrayList()
+
+    private var cellTowersList: List<CellTowerModel> = ArrayList()
 
     @InternalCoroutinesApi
     @Override
@@ -52,12 +69,13 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
             fetchLocationData(),
             viewLifecycleOwner,
             actionInCoroutine = {
-                addToDb(it!!)
-                startLocationUpdate(it)
+                it!!
+                addToDb(it)
             },
             actionOnMain = {
+                it!!
                 googleMapObject!!.addMarker(
-                    MarkerOptions().position(LatLng(it!!.latitude, it.longitude))
+                    MarkerOptions().position(LatLng(it.latitude, it.longitude))
                         .title("Your current location: ${it.latitude}, ${it.longitude} ")
                 ).remove()
                 googleMapObject!!.moveCamera(
@@ -66,6 +84,7 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
                         18F
                     )
                 )
+                startLocationUpdate(it)
             }
         )
     }
@@ -76,19 +95,40 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
 
     private fun repoResultConnection() = firstScreenViewModel.repoResult
 
-    private suspend fun performCheck() =
-        collectTheFlow(repoResultConnection().performAction(requireContext()))
+    private fun repoRoutersListConnection() = secondScreenViewModel.repo
+
+    private fun repoCellTowersConnection() = thirdScreenViewModel.repo
 
     private suspend fun selectAllLocationData() =
-        collectTheFlow(repoLocationConnection().selectAll())
+        repoLocationConnection().selectAll()
 
-    private suspend fun selectAllResultData() = collectTheFlow(repoResultConnection().selectAll())
+    private suspend fun selectAllResultData() =
+        repoResultConnection().selectAll()
 
     private suspend fun checkLocationStatus() =
-        collectTheFlow(repoResultConnection().checkLocationStatus())
+        repoResultConnection().checkLocationStatus()
 
     private suspend fun insertData(location: LocationModel) =
-        collectTheFlow(repoLocationConnection().insertAsFresh(location))
+        repoLocationConnection().insertAsFresh(location)
+
+    private suspend fun getRoutersListMap() =
+        repoRoutersListConnection().selectAll().let {
+            routersList = it!!
+        }
+
+    private suspend fun getCellTowersListMap() =
+        repoCellTowersConnection().selectAll().let {
+            cellTowersList = it!!
+        }
+
+    private suspend fun performCheck(): Unit? {
+        getRoutersListMap()
+        getCellTowersListMap()
+        return repoResultConnection().manageResponseAfterAction(
+            cellTowersList,
+            routersList
+        )
+    }
 
     private suspend fun getStatus(result: String?) {
         if (result != null) {
@@ -110,20 +150,20 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         latitude_value.text = location.latitude.toString()
     }
 
-    private suspend fun addToDb(location: LocationModel) {
+    private suspend fun addToDb(location: LocationModel): Unit? {
         return insertData(location)
     }
 
     private suspend fun isTrueLocation(): Boolean {
         val calculator = calculateDistance(
-            selectAllLocationData().latitude,
-            selectAllLocationData().longitude,
-            selectAllResultData().lat ?: 0.0,
-            selectAllResultData().lng ?: 0.0
+            selectAllLocationData()?.latitude ?: 0.0,
+            selectAllLocationData()?.longitude ?: 0.0,
+            selectAllResultData()?.lat ?: 0.0,
+            selectAllResultData()?.lng ?: 0.0
         )
         return isRealLocation(
             calculator,
-            selectAllResultData().accuracy ?: 0
+            selectAllResultData()?.accuracy ?: 0
         )
     }
 
@@ -135,8 +175,13 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         }
     }
 
-    private suspend fun checkStatusAfterAction() =
-        checkLocationStatus().status
+    private suspend fun checkStatusAfterAction(): String {
+        return if (checkLocationStatus()?.lat != null) {
+            "location"
+        } else {
+            "error"
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

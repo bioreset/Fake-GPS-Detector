@@ -6,6 +6,7 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface FakeGPSRestApi {
+
     @Headers("Content-Type: application/json")
     @POST("geolocation/v1/geolocate")
     suspend fun checkLocation(

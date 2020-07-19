@@ -2,7 +2,9 @@ package com.dariusz.fakegpsdetector.utils.cache
 
 import com.dariusz.fakegpsdetector.utils.ErrorHandling.handleError
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 object CacheCall {
 
@@ -12,14 +14,25 @@ object CacheCall {
     ): CacheStatus<T?> {
         return withContext(dispatcher) {
             try {
-                CacheStatus.Success(cacheCall.invoke())
+                withTimeout(2000) {
+                    CacheStatus.Success(cacheCall.invoke())
+                }
             } catch (throwable: Throwable) {
-                CacheStatus.CacheError(
-                    handleError(
-                        "generic",
-                        "Unknown Error"
-                    )
-                )
+                when (throwable) {
+                    is TimeoutCancellationException -> {
+                        CacheStatus.CacheError(
+                            handleError("cache-error", "TimeoutCancellationException Exception")
+                        )
+                    }
+                    else -> {
+                        CacheStatus.CacheError(
+                            handleError(
+                                "cache-error",
+                                "Unknown Error"
+                            )
+                        )
+                    }
+                }
             }
         }
     }

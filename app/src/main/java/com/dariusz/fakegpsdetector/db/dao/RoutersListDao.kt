@@ -13,6 +13,6 @@ interface RoutersListDao {
     suspend fun deleteAllRouters()
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT id, macAddress, frequency, level FROM routers_table ")
+    @Query("SELECT id, ssid, macAddress, frequency, level FROM routers_table;")
     suspend fun getAllRouters(): List<RoutersListModel>
 }

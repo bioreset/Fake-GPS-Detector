@@ -1,6 +1,5 @@
 package com.dariusz.fakegpsdetector.di
 
-import android.content.Context
 import com.dariusz.fakegpsdetector.api.FakeGPSRestApi
 import com.dariusz.fakegpsdetector.api.FakeGPSRestApiService
 import com.dariusz.fakegpsdetector.api.FakeGPSRestApiServiceImpl
@@ -8,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -21,7 +19,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(): FakeGPSRestApi {
+
         val client = OkHttpClient.Builder().build()
+
         return Retrofit.Builder()
             .baseUrl("https://www.googleapis.com/")
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -31,7 +31,7 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideRetrofitService(@ApplicationContext context: Context): FakeGPSRestApiService {
-        return FakeGPSRestApiServiceImpl(context)
+    fun provideRetrofitService(): FakeGPSRestApiService {
+        return FakeGPSRestApiServiceImpl()
     }
 }

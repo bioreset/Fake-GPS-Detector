@@ -15,6 +15,6 @@ interface LocationDao {
     @Query("DELETE FROM location")
     suspend fun deleteAllLocationInfo()
 
-    @Query("SELECT * FROM location")
+    @Query("SELECT * FROM location;")
     suspend fun getLocation(): LocationModel
 }

@@ -3,8 +3,10 @@ package com.dariusz.fakegpsdetector.ui.secondscreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.dariusz.fakegpsdetector.repository.RoutersListRepository
+import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Inject
 
+@InternalCoroutinesApi
 class SecondScreenViewModelFactory
 @Inject
 constructor(
