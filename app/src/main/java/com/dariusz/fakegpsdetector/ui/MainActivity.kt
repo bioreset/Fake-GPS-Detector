@@ -2,6 +2,7 @@ package com.dariusz.fakegpsdetector.ui
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -31,8 +32,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initNavigation()
         launchMain(this@MainActivity)
+        mainContext = this@MainActivity
     }
 
     override fun onDestroy() {
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         )
 
     private fun launchMain(context: Context) {
+        initNavigation()
         subscribeToPermissionCheck(context)
         subscribeToGpsStatus(context)
         subscribeToWifiStatus(context)
@@ -90,6 +92,9 @@ class MainActivity : AppCompatActivity() {
             context,
             listOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.CHANGE_WIFI_STATE,
                 Manifest.permission.READ_PHONE_STATE
             )
         ).removeObservers(context as LifecycleOwner)
@@ -114,5 +119,27 @@ class MainActivity : AppCompatActivity() {
             false -> showWifiAlertDialog(context)
             true -> dismissTheDialog(showWifiAlertDialog(context))
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 1000) {
+            if (grantResults.isNotEmpty() && grantResults.all {
+                    it == PackageManager.PERMISSION_GRANTED
+                }
+            ) {
+                launchMain(this@MainActivity)
+            } else {
+                turnOffMain(this@MainActivity)
+            }
+        }
+    }
+
+    companion object {
+        var mainContext: Context? = null
+            private set
     }
 }

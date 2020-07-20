@@ -19,17 +19,17 @@ import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutine
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.ktx.awaitMap
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.homescreen.*
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
-class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
+class FirstScreenFragment : Fragment(R.layout.homescreen) {
 
     private val firstScreenViewModel: FirstScreenViewModel by viewModels {
         provideFirstScreenViewModelFactory(requireContext())
@@ -53,7 +53,11 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
     @Override
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        performActionInsideCoroutine(viewLifecycleOwner) {
+            googleMapObject = mapFragment.awaitMap()
+        }
+        performMain()
         refresh_data.setOnClickListener {
             performActionInsideCoroutine(viewLifecycleOwner) {
                 performCheck()
@@ -62,9 +66,7 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-        googleMapObject = googleMap!!
-
+    private fun performMain() =
         performActionInsideCoroutineWithLiveData(
             fetchLocationData(),
             viewLifecycleOwner,
@@ -87,7 +89,6 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
                 startLocationUpdate(it)
             }
         )
-    }
 
     private fun fetchLocationData() = firstScreenViewModel.locationData(requireContext())
 
@@ -171,7 +172,8 @@ class FirstScreenFragment : Fragment(R.layout.homescreen), OnMapReadyCallback {
         return if (isTrueLocation()) {
             getString(R.string.true_location_text)
         } else {
-            getString(R.string.spoofed_location_text)
+            getString(R.string.spoofed_location_text) +
+                    " . The distance to real location is approx. " + checkLocationStatus()?.accuracy + " meters."
         }
     }
 

@@ -10,10 +10,13 @@ import com.dariusz.fakegpsdetector.model.ApiResponseModel
 import com.dariusz.fakegpsdetector.model.CellTowerModel
 import com.dariusz.fakegpsdetector.model.LocationModel
 import com.dariusz.fakegpsdetector.model.RoutersListModel
+import com.dariusz.fakegpsdetector.utils.Constants.DB_VER
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 @Database(
     entities = [CellTowerModel::class, LocationModel::class, RoutersListModel::class, ApiResponseModel::class],
-    version = 1,
+    version = DB_VER,
     exportSchema = false
 )
 abstract class FGDDatabase : RoomDatabase() {

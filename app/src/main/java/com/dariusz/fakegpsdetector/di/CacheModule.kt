@@ -7,19 +7,23 @@ import com.dariusz.fakegpsdetector.db.dao.LocationDao
 import com.dariusz.fakegpsdetector.db.dao.LocationFromApiResponseDao
 import com.dariusz.fakegpsdetector.db.dao.RoutersListDao
 import com.dariusz.fakegpsdetector.db.init.FGDDatabase
+import com.dariusz.fakegpsdetector.utils.Constants.DB_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.InternalCoroutinesApi
 
+@InternalCoroutinesApi
 @Module
 @InstallIn(ApplicationComponent::class)
 object CacheModule {
 
     @Provides
     fun buildDatabase(@ApplicationContext context: Context): FGDDatabase {
-        return Room.databaseBuilder(context, FGDDatabase::class.java, "fgd_database_main")
+        return Room.databaseBuilder(context, FGDDatabase::class.java, DB_NAME)
+            .fallbackToDestructiveMigration()
             .build()
     }
 

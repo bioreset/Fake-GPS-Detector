@@ -21,8 +21,10 @@ constructor(
     private val locationFromApiResponse: LocationFromApiResponseDao
 ) {
 
-    private suspend fun insertAsFresh(apiResponse: ApiResponseModelJson) =
+    private suspend fun insertAsFresh(apiResponse: ApiResponseModelJson) {
+        performCacheCall(locationFromApiResponse.deleteAllLocationFromApiRecords())
         performCacheCall(locationFromApiResponse.insert(asResponseToDb(apiResponse)))
+    }
 
     suspend fun selectAll() =
         performCacheCall(locationFromApiResponse.getLocationFromApiInfo())
