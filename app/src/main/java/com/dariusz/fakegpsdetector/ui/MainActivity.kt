@@ -29,9 +29,12 @@ class MainActivity : AppCompatActivity() {
         provideSharedViewModelFactory()
     }
 
+    private var permissionArray: List<String> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setPermissionArray()
         launchMain(this@MainActivity)
         mainContext = this@MainActivity
     }
@@ -41,13 +44,20 @@ class MainActivity : AppCompatActivity() {
         turnOffMain(this@MainActivity)
     }
 
+    private fun setPermissionArray() {
+        permissionArray = listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.CHANGE_WIFI_STATE,
+            Manifest.permission.READ_PHONE_STATE
+        )
+    }
+
     private fun subscribeToPermissionCheck(context: Context) =
         mainViewModel.permissionCheck(
             context,
-            listOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.READ_PHONE_STATE
-            )
+            permissionArray
         ).observe(
             context as LifecycleOwner,
             Observer {
@@ -90,13 +100,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.gpsStatus(context).removeObservers(context as LifecycleOwner)
         mainViewModel.permissionCheck(
             context,
-            listOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_WIFI_STATE,
-                Manifest.permission.CHANGE_WIFI_STATE,
-                Manifest.permission.READ_PHONE_STATE
-            )
+            permissionArray
         ).removeObservers(context as LifecycleOwner)
     }
 
@@ -127,14 +131,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         if (requestCode == 1000) {
-            if (grantResults.isNotEmpty() && grantResults.all {
-                    it == PackageManager.PERMISSION_GRANTED
-                }
-            ) {
-                launchMain(this@MainActivity)
-            } else {
-                turnOffMain(this@MainActivity)
-            }
+            launchMain(this@MainActivity)
         }
     }
 

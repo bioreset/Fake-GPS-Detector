@@ -18,7 +18,7 @@ object ViewUtils {
         return liveData.observe(
             lifecycleOwner,
             Observer {
-                lifecycleOwner.lifecycle.coroutineScope.launch {
+                lifecycleOwner.lifecycle.coroutineScope.launchWhenCreated {
                     actionInCoroutine.invoke(liveData.value)
                 }
                 actionOnMain.invoke(liveData.value)
@@ -30,7 +30,7 @@ object ViewUtils {
         lifecycleOwner: LifecycleOwner,
         action: suspend () -> Unit
     ): Job {
-        return lifecycleOwner.lifecycle.coroutineScope.launch {
+        return lifecycleOwner.lifecycle.coroutineScope.launchWhenCreated {
             action.invoke()
         }
     }

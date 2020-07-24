@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.model.RoutersListModel.Companion.newRoutersList
 import com.dariusz.fakegpsdetector.ui.adapters.RoutersListAdapter
@@ -17,7 +18,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
-class SecondScreenFragment : Fragment(R.layout.routers_list) {
+class SecondScreenFragment : Fragment(R.layout.routers_list), SwipeRefreshLayout.OnRefreshListener {
 
     private var listAdapterWifi: RoutersListAdapter? = null
 
@@ -46,11 +47,10 @@ class SecondScreenFragment : Fragment(R.layout.routers_list) {
     }
 
     private fun updateItems(routersList: List<ScanResult>? = null) {
-        listAdapterWifi?.clear()
+        listAdapterWifi?.notifyDataSetChanged()
         if (routersList != null) {
             listAdapterWifi?.addAll(newRoutersList(routersList))
         }
-        listAdapterWifi?.notifyDataSetChanged()
     }
 
     private suspend fun addToDb(routersList: List<ScanResult>?) {
@@ -66,20 +66,19 @@ class SecondScreenFragment : Fragment(R.layout.routers_list) {
     private suspend fun insertData(routersList: List<ScanResult>) =
         repoConnection().insertAsFresh(newRoutersList(routersList))
 
-    private fun restoreList() {
+    private fun restoreList() =
         fetchNewRoutersData().value?.let {
             updateItems(it)
         }
-    }
 
-    override fun onResume() {
-        restoreList()
-        super.onResume()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         fetchNewRoutersData().removeObservers(viewLifecycleOwner)
         routerlist.adapter = null
+    }
+
+    override fun onRefresh() {
+        restoreList()
     }
 }

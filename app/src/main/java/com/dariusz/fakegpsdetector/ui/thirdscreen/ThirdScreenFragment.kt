@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
 import com.dariusz.fakegpsdetector.utils.CellTowersUtils.mapCellTowers
@@ -17,7 +18,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
-class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
+class ThirdScreenFragment : Fragment(R.layout.celltower_list), SwipeRefreshLayout.OnRefreshListener {
 
     private var listAdapterCell: CellTowersListAdapter? = null
 
@@ -59,27 +60,24 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list) {
     }
 
     private fun updateItems(cellTowersList: List<CellInfo>? = null) {
-        listAdapterCell?.clear()
+        listAdapterCell?.notifyDataSetChanged()
         if (cellTowersList != null) {
             listAdapterCell?.addAll(mapCellTowers(cellTowersList))
         }
-        listAdapterCell?.notifyDataSetChanged()
     }
 
-    private fun restoreList() {
+    private fun restoreList() =
         fetchNewCellTowerData().value?.let {
             updateItems(it)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        restoreList()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         fetchNewCellTowerData().removeObservers(viewLifecycleOwner)
         celltowerlist.adapter = null
+    }
+
+    override fun onRefresh() {
+        restoreList()
     }
 }

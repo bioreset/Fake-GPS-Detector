@@ -8,29 +8,19 @@ import com.dariusz.fakegpsdetector.model.LocationModel
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
 
 class LocationLiveData(context: Context) : LiveData<LocationModel>() {
 
-    private var fusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(context)
+    private val fusedLocationProviderClient =
+        getFusedLocationProviderClient(context)
 
-    override fun onInactive() {
-        super.onInactive()
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-    }
-
-    @SuppressLint("MissingPermission")
-    override fun onActive() {
-        super.onActive()
-        fusedLocationProviderClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                location?.also {
-                    setLocationData(it)
-                }
-            }
-        startLocationUpdates()
-    }
+    private val locationRequest: LocationRequest = LocationRequest.create()
+        .apply {
+            interval = 1000L
+            fastestInterval = 500L
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -41,13 +31,19 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
         }
     }
 
-    private fun setLocationData(location: Location) {
-        postValue(
-            LocationModel(
-                longitude = location.longitude,
-                latitude = location.latitude
-            )
-        )
+    @SuppressLint("MissingPermission")
+    override fun onActive() {
+        fusedLocationProviderClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.also {
+                    setLocationData(it)
+                }
+            }
+        startLocationUpdates()
+    }
+
+    override fun onInactive() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
     @SuppressLint("MissingPermission")
@@ -59,12 +55,13 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
         )
     }
 
-    companion object {
-        val locationRequest: LocationRequest = LocationRequest.create()
-            .apply {
-                interval = 1000L
-                fastestInterval = 500L
-                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            }
+    private fun setLocationData(location: Location) {
+        postValue(
+            LocationModel(
+                longitude = location.longitude,
+                latitude = location.latitude
+            )
+        )
     }
+
 }

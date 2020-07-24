@@ -18,15 +18,13 @@ class WifiStatusLiveData(private val context: Context) : LiveData<WifiStatusMode
         context.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     override fun onActive() {
-        super.onActive()
         registerReceiver()
         isWifiEnabled()
     }
 
-    override fun onInactive() {
-        super.onInactive()
+    override fun onInactive() =
         unregisterReceiver()
-    }
+
 
     private fun isWifiEnabled() {
         if (wifiManager.isWifiEnabled)

@@ -26,9 +26,9 @@ class CellTowersLiveData(private var context: Context) : LiveData<List<CellInfo>
         postValue(allCellInfo)
     }
 
-    override fun onInactive() {
+    override fun onInactive() =
         unregisterReceiver()
-    }
+
 
     private fun onCellInfoChange() {
         allCellInfo
