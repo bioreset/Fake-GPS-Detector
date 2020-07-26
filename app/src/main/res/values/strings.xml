@@ -4,7 +4,6 @@
     <string name="title_routers">Routers</string>
     <string name="title_celltowers">Cell towers</string>
     <string name="action_settings">Settings</string>
-    <string name="map_id">ca438aba3f15d0a1</string>
     <string name="google_maps_api_key">AIzaSyCkZcvE_QrR-PCCpBP1g-LgrIOywhqSuAU</string>
 
     <string name="permission_status_granted">Permissions are Granted</string>
@@ -27,20 +26,20 @@
 
     <string name="latitude">Latitude: </string>
     <string name="longitude">Longitude: </string>
-    <string name="latlng">%.3f, %.3f</string>
+    <string name="latlng" formatted="false">%.3f, %.3f</string>
 
-    <string name="station_frequency">Frequency: %1$s MHz</string>
-    <string name="station_level">Level: %1$s dBm</string>
+    <string name="station_frequency" formatted="false">Frequency: %1$s MHz</string>
+    <string name="station_level" formatted="false">Level: %1$s dBm</string>
 
-    <string name="signal_strength">Level: %1$s dBm</string>
+    <string name="signal_strength" formatted="false">Level: %1$s dBm</string>
 
-    <string name="cid_text">Cell ID: %1$s</string>
-    <string name="lac_text">Location Area Code: %1$s</string>
-    <string name="mcc_text">Mobile Country Code: %1$s</string>
-    <string name="mnc_text">Mobile Network Code: %1$s</string>
+    <string name="cid_text" formatted="false">Cell ID: %1$s</string>
+    <string name="lac_text" formatted="false">Location Area Code: %1$s</string>
+    <string name="mcc_text" formatted="false">Mobile Country Code: %1$s</string>
+    <string name="mnc_text" formatted="false">Mobile Network Code: %1$s</string>
 
-    <string name="ssid_text">SSID: %1$s</string>
-    <string name="mac_text">MAC Address: %1$s</string>
+    <string name="ssid_text" formatted="false">SSID: %1$s</string>
+    <string name="mac_text" formatted="false">MAC Address: %1$s</string>
 
     <string name="true_location_text">Current location is real.</string>
     <string name="spoofed_location_text">Spoofed Location or too small sample size</string>

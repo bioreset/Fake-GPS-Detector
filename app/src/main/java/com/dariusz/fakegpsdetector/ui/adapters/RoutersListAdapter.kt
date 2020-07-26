@@ -2,28 +2,90 @@ package com.dariusz.fakegpsdetector.ui.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.dariusz.fakegpsdetector.R
+import com.dariusz.fakegpsdetector.databinding.RoutersItemBinding
 import com.dariusz.fakegpsdetector.model.RoutersListModel
-import kotlinx.android.synthetic.main.routers_item.view.*
 
-class RoutersListAdapter(context: Context) : ArrayAdapter<RoutersListModel>(context, 0) {
+class RoutersListAdapter :
+    RecyclerView.Adapter<RoutersListAdapter.RoutersViewHolder>() {
 
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
+    private var routersList: List<RoutersListModel> = ArrayList()
 
-    @Override
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val item = getItem(position)
-        val view = convertView ?: inflater.inflate(R.layout.routers_item, parent, false)
+    private var currentContext: Context? = null
 
-        view.txt_ssid.text = context.getString(R.string.ssid_text, item?.ssid)
-        view.txt_bssid.text = context.getString(R.string.mac_text, item?.macAddress)
-        view.txt_frequency.text =
-            context.getString(R.string.station_frequency, item?.frequency.toString())
-        view.txt_level.text = context.getString(R.string.station_level, item?.level.toString())
+    private lateinit var routersListBinding: RoutersItemBinding
 
-        return view
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoutersViewHolder {
+        currentContext = parent.context
+        routersListBinding =
+            RoutersItemBinding.inflate(LayoutInflater.from(currentContext), parent, false)
+        return RoutersViewHolder(routersListBinding)
+    }
+
+    override fun onBindViewHolder(holder: RoutersViewHolder, position: Int) {
+        val currentItem = routersList[position]
+        holder.txtSSID.text = currentContext!!.getString(R.string.ssid_text, currentItem.ssid)
+        holder.txtBSSID.text = currentContext!!.getString(R.string.mac_text, currentItem.macAddress)
+        holder.txtFrequency.text =
+            currentContext!!.getString(R.string.station_frequency, currentItem.frequency.toString())
+        holder.txtSignalStrength.text =
+            currentContext!!.getString(R.string.station_level, currentItem.level.toString())
+    }
+
+    override fun getItemCount() = routersList.size
+
+    fun submitList(routerList: List<RoutersListModel>) {
+        val oldList = routersList
+        val diffResult: DiffUtil.DiffResult =
+            DiffUtil.calculateDiff(BlogItemDiffCallback(oldList, routerList))
+        routersList = routerList
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    inner class RoutersViewHolder(itemView: RoutersItemBinding) :
+        RecyclerView.ViewHolder(routersListBinding.root) {
+        val txtSSID: TextView = itemView.txtSsid
+        val txtBSSID: TextView = itemView.txtBssid
+        val txtFrequency: TextView = itemView.txtFrequency
+        val txtSignalStrength: TextView = itemView.txtLevel
+    }
+
+    class BlogItemDiffCallback(
+        var oldBlogList: List<RoutersListModel>,
+        var newBlogList: List<RoutersListModel>
+
+    ) : DiffUtil.Callback() {
+
+        override fun areItemsTheSame(
+            oldItemPosition: Int,
+            newItemPosition: Int
+        ): Boolean {
+            return (
+                oldBlogList[oldItemPosition].level
+                    == newBlogList[newItemPosition].level
+                )
+        }
+
+        override fun getOldListSize(): Int {
+            return oldBlogList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newBlogList.size
+        }
+
+        override fun areContentsTheSame(
+            oldItemPosition: Int,
+            newItemPosition: Int
+        ): Boolean {
+            return (
+                oldBlogList[oldItemPosition]
+                    == newBlogList[newItemPosition]
+                )
+        }
     }
 }

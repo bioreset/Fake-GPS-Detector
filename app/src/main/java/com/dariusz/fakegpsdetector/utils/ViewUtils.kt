@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 object ViewUtils {
 
@@ -33,5 +32,17 @@ object ViewUtils {
         return lifecycleOwner.lifecycle.coroutineScope.launchWhenCreated {
             action.invoke()
         }
+    }
+
+    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(
+            lifecycleOwner,
+            object : Observer<T> {
+                override fun onChanged(t: T?) {
+                    observer.onChanged(t)
+                    removeObserver(this)
+                }
+            }
+        )
     }
 }

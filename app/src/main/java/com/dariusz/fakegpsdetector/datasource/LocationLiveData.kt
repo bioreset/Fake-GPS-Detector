@@ -63,5 +63,4 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
             )
         )
     }
-
 }

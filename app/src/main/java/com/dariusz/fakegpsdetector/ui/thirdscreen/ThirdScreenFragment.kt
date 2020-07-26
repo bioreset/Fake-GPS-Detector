@@ -2,23 +2,29 @@ package com.dariusz.fakegpsdetector.ui.thirdscreen
 
 import android.os.Bundle
 import android.telephony.CellInfo
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dariusz.fakegpsdetector.R
+import com.dariusz.fakegpsdetector.databinding.CelltowerListBinding
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
 import com.dariusz.fakegpsdetector.utils.CellTowersUtils.mapCellTowers
 import com.dariusz.fakegpsdetector.utils.Injectors.provideThirdScreenViewModelFactory
+import com.dariusz.fakegpsdetector.utils.ViewUtils.observeOnce
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.celltower_list.*
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
-class ThirdScreenFragment : Fragment(R.layout.celltower_list), SwipeRefreshLayout.OnRefreshListener {
+class ThirdScreenFragment :
+    Fragment(R.layout.celltower_list),
+    SwipeRefreshLayout.OnRefreshListener {
 
     private var listAdapterCell: CellTowersListAdapter? = null
 
@@ -26,16 +32,32 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list), SwipeRefreshLayou
         provideThirdScreenViewModelFactory(requireContext())
     }
 
+    private var cellTowerListBindingImpl: CelltowerListBinding? = null
+
+    private val cellTowerListBinding
+        get() = cellTowerListBindingImpl!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        cellTowerListBindingImpl = CelltowerListBinding.inflate(inflater, container, false)
+        return cellTowerListBinding.root
+    }
+
     @Override
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listAdapterCell = CellTowersListAdapter(requireContext())
-
-        celltowerlist.adapter = listAdapterCell
+        cellTowerListBinding.celltowerlist.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            listAdapterCell = CellTowersListAdapter()
+            adapter = listAdapterCell
+        }
 
         performActionInsideCoroutineWithLiveData(
-            fetchNewCellTowerData().distinctUntilChanged(),
+            fetchNewCellTowerData(),
             viewLifecycleOwner,
             actionInCoroutine = {
                 addToDb(it)
@@ -60,24 +82,28 @@ class ThirdScreenFragment : Fragment(R.layout.celltower_list), SwipeRefreshLayou
     }
 
     private fun updateItems(cellTowersList: List<CellInfo>? = null) {
-        listAdapterCell?.notifyDataSetChanged()
         if (cellTowersList != null) {
-            listAdapterCell?.addAll(mapCellTowers(cellTowersList))
+            listAdapterCell?.submitList(mapCellTowers(cellTowersList))
         }
+        listAdapterCell?.notifyDataSetChanged()
     }
-
-    private fun restoreList() =
-        fetchNewCellTowerData().value?.let {
-            updateItems(it)
-        }
 
     override fun onDestroyView() {
         super.onDestroyView()
         fetchNewCellTowerData().removeObservers(viewLifecycleOwner)
-        celltowerlist.adapter = null
+        cellTowerListBinding.celltowerlist.adapter = null
+        cellTowerListBindingImpl = null
     }
 
     override fun onRefresh() {
-        restoreList()
+        cellTowerListBinding.swipeCelltowers.apply {
+            fetchNewCellTowerData().observeOnce(
+                viewLifecycleOwner,
+                Observer {
+                    updateItems(it)
+                }
+            )
+            isRefreshing = false
+        }
     }
 }

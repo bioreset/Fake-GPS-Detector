@@ -25,7 +25,6 @@ class WifiStatusLiveData(private val context: Context) : LiveData<WifiStatusMode
     override fun onInactive() =
         unregisterReceiver()
 
-
     private fun isWifiEnabled() {
         if (wifiManager.isWifiEnabled)
             postValue(WifiStatusModel(status = true))

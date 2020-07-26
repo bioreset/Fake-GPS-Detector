@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.dariusz.fakegpsdetector.R
+import com.dariusz.fakegpsdetector.databinding.ActivityMainBinding
 import com.dariusz.fakegpsdetector.ui.firstscreen.FirstScreenFragment
 import com.dariusz.fakegpsdetector.utils.DialogManager.dismissTheDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showGpsNotEnabledDialog
@@ -18,7 +18,6 @@ import com.dariusz.fakegpsdetector.utils.Injectors.provideSharedViewModelFactory
 import com.dariusz.fakegpsdetector.utils.NavigationSetup.goToFragment
 import com.dariusz.fakegpsdetector.utils.NavigationSetup.navListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
@@ -31,9 +30,13 @@ class MainActivity : AppCompatActivity() {
 
     private var permissionArray: List<String> = ArrayList()
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         setPermissionArray()
         launchMain(this@MainActivity)
         mainContext = this@MainActivity
@@ -91,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     private fun initNavigation() {
         return supportFragmentManager.let {
             goToFragment(it, FirstScreenFragment())
-            nav_view.setOnNavigationItemSelectedListener(navListener(it))
+            binding.navView.setOnNavigationItemSelectedListener(navListener(it))
         }
     }
 
@@ -131,7 +134,14 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         if (requestCode == 1000) {
-            launchMain(this@MainActivity)
+            if (grantResults.isNotEmpty() && grantResults.all {
+                it == PackageManager.PERMISSION_GRANTED
+            }
+            )
+                launchMain(this@MainActivity)
+            else {
+                turnOffMain(this@MainActivity)
+            }
         }
     }
 

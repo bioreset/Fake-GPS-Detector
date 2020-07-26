@@ -1,10 +1,13 @@
 package com.dariusz.fakegpsdetector.ui.firstscreen
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dariusz.fakegpsdetector.R
+import com.dariusz.fakegpsdetector.databinding.HomescreenBinding
 import com.dariusz.fakegpsdetector.model.CellTowerModel
 import com.dariusz.fakegpsdetector.model.LocationModel
 import com.dariusz.fakegpsdetector.model.RoutersListModel
@@ -24,7 +27,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.ktx.awaitMap
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.homescreen.*
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
@@ -49,6 +51,20 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
 
     private var cellTowersList: List<CellTowerModel> = ArrayList()
 
+    private var homeScreenBindingImpl: HomescreenBinding? = null
+
+    private val homeScreenBinding
+        get() = homeScreenBindingImpl!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        homeScreenBindingImpl = HomescreenBinding.inflate(inflater, container, false)
+        return homeScreenBinding.root
+    }
+
     @InternalCoroutinesApi
     @Override
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +74,7 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
             googleMapObject = mapFragment.awaitMap()
         }
         performMain()
-        refresh_data.setOnClickListener {
+        homeScreenBinding.refreshData.setOnClickListener {
             performActionInsideCoroutine(viewLifecycleOwner) {
                 performCheck()
                 getStatus(checkStatusAfterAction())
@@ -135,20 +151,21 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
         if (result != null) {
             when (result) {
                 "location" -> {
-                    result_title.text = isTrueLocationString()
+                    homeScreenBinding.resultTitle.text = isTrueLocationString()
                 }
                 else -> {
-                    result_title.text = getString(R.string.error_checking_location_text)
+                    homeScreenBinding.resultTitle.text =
+                        getString(R.string.error_checking_location_text)
                 }
             }
         } else {
-            result_title.text = getString(R.string.empty_db_text)
+            homeScreenBinding.resultTitle.text = getString(R.string.empty_db_text)
         }
     }
 
     private fun startLocationUpdate(location: LocationModel) {
-        longitude_value.text = location.longitude.toString()
-        latitude_value.text = location.latitude.toString()
+        homeScreenBinding.longitudeValue.text = location.longitude.toString()
+        homeScreenBinding.latitudeValue.text = location.latitude.toString()
     }
 
     private suspend fun addToDb(location: LocationModel): Unit? {
@@ -173,7 +190,7 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
             getString(R.string.true_location_text)
         } else {
             getString(R.string.spoofed_location_text) +
-                    " . The distance to real location is approx. " + checkLocationStatus()?.accuracy + " meters."
+                " . The distance to real location is approx. " + checkLocationStatus()?.accuracy + " meters."
         }
     }
 
@@ -188,5 +205,6 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
     override fun onDestroyView() {
         super.onDestroyView()
         fetchLocationData().removeObservers(viewLifecycleOwner)
+        homeScreenBindingImpl = null
     }
 }

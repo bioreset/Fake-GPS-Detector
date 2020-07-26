@@ -22,9 +22,7 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(): FakeGPSRestApi {
-
         val client = OkHttpClient.Builder().build()
-
         return Retrofit.Builder()
             .baseUrl(API_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
