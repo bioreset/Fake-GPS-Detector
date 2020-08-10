@@ -17,12 +17,12 @@ data class CellTowerModel(
     val locationAreaCode: Int,
     @ColumnInfo(name = "mobileCountryCode")
     @field:Json(name = "mobileCountryCode")
-    val mobileCountryCode: String?,
+    val mobileCountryCode: String? = null,
     @ColumnInfo(name = "mobileNetworkCode")
     @field:Json(name = "mobileNetworkCode")
-    val mobileNetworkCode: String?,
+    val mobileNetworkCode: String? = null,
     @ColumnInfo(name = "signalStrength")
-    val signalStrength: Int?
+    val signalStrength: Int
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

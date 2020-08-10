@@ -15,6 +15,6 @@ object Constants {
     val API_KEY = mainContext?.getString(R.string.google_maps_api_key) ?: ""
 
     // ROOM SETUP
-    const val DB_NAME = "fgd_database"
+    const val DB_NAME = "fgd_database_final"
     const val DB_VER = 1
 }

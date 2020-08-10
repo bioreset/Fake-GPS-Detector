@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.databinding.HomescreenBinding
 import com.dariusz.fakegpsdetector.model.CellTowerModel
@@ -19,7 +21,6 @@ import com.dariusz.fakegpsdetector.utils.Injectors.provideFirstScreenViewModelFa
 import com.dariusz.fakegpsdetector.utils.Injectors.provideSecondScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.Injectors.provideThirdScreenViewModelFactory
 import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutine
-import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -31,7 +32,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
-class FirstScreenFragment : Fragment(R.layout.homescreen) {
+class FirstScreenFragment : Fragment() {
 
     private val firstScreenViewModel: FirstScreenViewModel by viewModels {
         provideFirstScreenViewModelFactory(requireContext())
@@ -83,15 +84,9 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
     }
 
     private fun performMain() =
-        performActionInsideCoroutineWithLiveData(
-            fetchLocationData(),
+        fetchLocationData().observe(
             viewLifecycleOwner,
-            actionInCoroutine = {
-                it!!
-                addToDb(it)
-            },
-            actionOnMain = {
-                it!!
+            Observer {
                 googleMapObject!!.addMarker(
                     MarkerOptions().position(LatLng(it.latitude, it.longitude))
                         .title("Your current location: ${it.latitude}, ${it.longitude} ")
@@ -103,6 +98,9 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
                     )
                 )
                 startLocationUpdate(it)
+                performActionInsideCoroutine(viewLifecycleOwner) {
+                    addToDb(it)
+                }
             }
         )
 
@@ -152,14 +150,32 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
             when (result) {
                 "location" -> {
                     homeScreenBinding.resultTitle.text = isTrueLocationString()
+                    homeScreenBinding.resultTitle.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.common_google_signin_btn_text_light
+                        )
+                    )
                 }
                 else -> {
                     homeScreenBinding.resultTitle.text =
                         getString(R.string.error_checking_location_text)
+                    homeScreenBinding.resultTitle.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.design_default_color_error
+                        )
+                    )
                 }
             }
         } else {
             homeScreenBinding.resultTitle.text = getString(R.string.empty_db_text)
+            homeScreenBinding.resultTitle.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.design_default_color_error
+                )
+            )
         }
     }
 
@@ -190,7 +206,7 @@ class FirstScreenFragment : Fragment(R.layout.homescreen) {
             getString(R.string.true_location_text)
         } else {
             getString(R.string.spoofed_location_text) +
-                " . The distance to real location is approx. " + checkLocationStatus()?.accuracy + " meters."
+                    " . The distance to real location is more than " + checkLocationStatus()?.accuracy + " meters."
         }
     }
 

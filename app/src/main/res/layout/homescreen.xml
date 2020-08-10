@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="56dp"
+    android:id="@+id/fragment_first_screen"
     tools:context=".ui.firstscreen.FirstScreenFragment">
 
     <fragment
@@ -18,8 +18,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
-        android:layout_width="412dp"
-        android:layout_height="275dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,23 +44,16 @@
                 android:text="@string/latitude"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                tools:layout_conversion_absoluteHeight="24dp"
-                tools:layout_conversion_absoluteWidth="409dp"
-                tools:layout_editor_absoluteX="1dp"
-                tools:layout_editor_absoluteY="578dp" />
+                android:textColor="@color/primary_text" />
 
             <TextView
                 android:id="@+id/latitude_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="#2196F3"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                tools:layout_conversion_absoluteHeight="24dp"
-                tools:layout_conversion_absoluteWidth="409dp"
-                tools:layout_editor_absoluteX="1dp"
-                tools:layout_editor_absoluteY="612dp" />
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/longitude_text"
@@ -69,33 +62,26 @@
                 android:text="@string/longitude"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                tools:layout_conversion_absoluteHeight="24dp"
-                tools:layout_conversion_absoluteWidth="409dp"
-                tools:layout_editor_absoluteX="1dp"
-                tools:layout_editor_absoluteY="510dp" />
+                android:textColor="@color/primary_text" />
 
             <TextView
                 android:id="@+id/longitude_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="#2196F3"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                tools:layout_conversion_absoluteHeight="24dp"
-                tools:layout_conversion_absoluteWidth="409dp"
-                tools:layout_editor_absoluteX="1dp"
-                tools:layout_editor_absoluteY="544dp" />
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/result_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lines="3"
                 android:text=""
-                android:textColor="@color/colorPrimaryDark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
 
         </LinearLayout>
     </ScrollView>
@@ -105,11 +91,12 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginStart="339dp"
-        android:layout_marginTop="597dp"
+        android:layout_marginTop="560dp"
         android:layout_marginEnd="24dp"
         android:clickable="true"
         android:foregroundGravity="top"
         android:visibility="visible"
+        app:backgroundTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"

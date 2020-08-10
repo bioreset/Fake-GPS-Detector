@@ -45,5 +45,6 @@
     <string name="spoofed_location_text">Spoofed Location or too small sample size</string>
     <string name="error_checking_location_text">Error: Something went wrong</string>
     <string name="empty_db_text">Empty database</string>
+    <string name="celltower_error_panel">If a given Cell Tower has certain fields nulled, it means that the firmware on it is outdated and the detection method implemented in this application will not work.</string>
 
 </resources>

@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_homescreen"
+        android:id="@+id/nav_graph_first_screen"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_routers"
+        android:id="@+id/nav_graph_second_screen"
         android:icon="@drawable/ic_router_black_24dp"
         android:title="@string/title_routers" />
 
     <item
-        android:id="@+id/navigation_celltowers"
+        android:id="@+id/nav_graph_third_screen"
         android:icon="@drawable/ic_cell_tower_black_24dp"
         android:title="@string/title_celltowers" />
 

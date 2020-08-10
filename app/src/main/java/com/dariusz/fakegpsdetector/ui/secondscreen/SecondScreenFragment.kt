@@ -9,20 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.databinding.RoutersListBinding
 import com.dariusz.fakegpsdetector.model.RoutersListModel.Companion.newRoutersList
 import com.dariusz.fakegpsdetector.ui.adapters.RoutersListAdapter
 import com.dariusz.fakegpsdetector.utils.Injectors.provideSecondScreenViewModelFactory
-import com.dariusz.fakegpsdetector.utils.ViewUtils.observeOnce
-import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
+import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutine
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
-class SecondScreenFragment : Fragment(R.layout.routers_list), SwipeRefreshLayout.OnRefreshListener {
+class SecondScreenFragment : Fragment() {
 
     private var listAdapterWifi: RoutersListAdapter? = null
 
@@ -54,19 +51,19 @@ class SecondScreenFragment : Fragment(R.layout.routers_list), SwipeRefreshLayout
             adapter = listAdapterWifi
         }
 
-        performActionInsideCoroutineWithLiveData(
-            fetchNewRoutersData(),
+        fetchNewRoutersData().observe(
             viewLifecycleOwner,
-            actionInCoroutine = {
-                addToDb(it)
-            },
-            actionOnMain = {
+            Observer {
                 updateItems(it)
+                performActionInsideCoroutine(viewLifecycleOwner) {
+                    addToDb(it)
+                }
             }
         )
     }
 
     private fun updateItems(routersList: List<ScanResult>? = null) {
+        listAdapterWifi?.clearList()
         if (routersList != null) {
             listAdapterWifi?.submitList(newRoutersList(routersList))
         }
@@ -85,18 +82,6 @@ class SecondScreenFragment : Fragment(R.layout.routers_list), SwipeRefreshLayout
 
     private suspend fun insertData(routersList: List<ScanResult>) =
         repoConnection().insertAsFresh(newRoutersList(routersList))
-
-    override fun onRefresh() {
-        routersListBinding.swipeRouters.apply {
-            fetchNewRoutersData().observeOnce(
-                viewLifecycleOwner,
-                Observer {
-                    updateItems(it)
-                }
-            )
-            isRefreshing = false
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

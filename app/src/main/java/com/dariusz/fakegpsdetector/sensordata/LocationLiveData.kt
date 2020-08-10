@@ -1,4 +1,4 @@
-package com.dariusz.fakegpsdetector.datasource
+package com.dariusz.fakegpsdetector.sensordata
 
 import android.annotation.SuppressLint
 import android.content.Context

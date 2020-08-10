@@ -2,21 +2,23 @@ package com.dariusz.fakegpsdetector.ui
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.ui.setupActionBarWithNavController
+import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.databinding.ActivityMainBinding
-import com.dariusz.fakegpsdetector.ui.firstscreen.FirstScreenFragment
 import com.dariusz.fakegpsdetector.utils.DialogManager.dismissTheDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showGpsNotEnabledDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showPermissionsNeededDialog
 import com.dariusz.fakegpsdetector.utils.DialogManager.showWifiAlertDialog
 import com.dariusz.fakegpsdetector.utils.Injectors.provideSharedViewModelFactory
-import com.dariusz.fakegpsdetector.utils.NavigationSetup.goToFragment
-import com.dariusz.fakegpsdetector.utils.NavigationSetup.navListener
+import com.dariusz.fakegpsdetector.utils.NavigationSetup.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -32,12 +34,29 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private var currentNavController: LiveData<NavController>? = null
+
+    private var savedState: Bundle? = null
+
+    private val askMultiplePermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            currentNavController?.value?.navigate(R.id.fragment_first_screen)
+            if (savedState == null) {
+                setupBottomNavigationBar()
+            }
+            launchMain(this@MainActivity)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        savedState = savedInstanceState
         val view = binding.root
         setContentView(view)
         setPermissionArray()
+        if (savedState == null) {
+            setupBottomNavigationBar()
+        }
         launchMain(this@MainActivity)
         mainContext = this@MainActivity
     }
@@ -64,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         ).observe(
             context as LifecycleOwner,
             Observer {
-                handleAlertPermissions(context, it.status)
+                handleAlertPermissions(it.status)
             }
         )
 
@@ -85,17 +104,9 @@ class MainActivity : AppCompatActivity() {
         )
 
     private fun launchMain(context: Context) {
-        initNavigation()
         subscribeToPermissionCheck(context)
         subscribeToGpsStatus(context)
         subscribeToWifiStatus(context)
-    }
-
-    private fun initNavigation() {
-        return supportFragmentManager.let {
-            goToFragment(it, FirstScreenFragment())
-            binding.navView.setOnNavigationItemSelectedListener(navListener(it))
-        }
     }
 
     private fun turnOffMain(context: Context) {
@@ -107,10 +118,31 @@ class MainActivity : AppCompatActivity() {
         ).removeObservers(context as LifecycleOwner)
     }
 
-    private fun handleAlertPermissions(context: Context, status: Boolean) {
+    private fun setupBottomNavigationBar() {
+        val bottomNav = binding.navView
+        val controller = bottomNav.setupWithNavController(
+            navGraphIds = listOf(
+                R.navigation.bottom_navigation_first_screen,
+                R.navigation.bottom_navigation_second_screen,
+                R.navigation.bottom_navigation_third_screen
+            ),
+            fragmentManager = supportFragmentManager,
+            containerId = R.id.nav_host_fragment,
+            intent = intent
+        )
+        controller.observe(
+            this@MainActivity,
+            Observer {
+                setupActionBarWithNavController(it)
+            }
+        )
+        currentNavController = controller
+    }
+
+    private fun handleAlertPermissions(status: Boolean) {
         when (status) {
-            false -> showPermissionsNeededDialog(context)
-            true -> dismissTheDialog(showPermissionsNeededDialog(context))
+            false -> permissionAlert()
+            true -> dismissTheDialog(permissionAlert())
         }
     }
 
@@ -128,21 +160,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == 1000) {
-            if (grantResults.isNotEmpty() && grantResults.all {
-                it == PackageManager.PERMISSION_GRANTED
-            }
-            )
-                launchMain(this@MainActivity)
-            else {
-                turnOffMain(this@MainActivity)
-            }
-        }
+    private fun permissionAlert() =
+        showPermissionsNeededDialog(this@MainActivity) { invokePermissionAction() }
+
+    private fun invokePermissionAction() {
+        askMultiplePermissions.launch(permissionArray.toTypedArray())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        setupBottomNavigationBar()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return currentNavController?.value?.navigateUp() ?: false
     }
 
     companion object {

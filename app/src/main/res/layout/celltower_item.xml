@@ -15,34 +15,39 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/primary_text" />
 
     <TextView
         android:id="@+id/txt_locationareacode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lines="1" />
+        android:lines="1"
+        android:textColor="@color/secondary_text" />
 
     <TextView
         android:id="@+id/txt_mobilecountrycode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lines="1" />
+        android:lines="1"
+        android:textColor="@color/secondary_text" />
 
     <TextView
         android:id="@+id/mobilenetworkcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lines="1" />
+        android:lines="1"
+        android:textColor="@color/secondary_text" />
 
     <TextView
         android:id="@+id/signalstrength"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lines="1" />
+        android:lines="1"
+        android:textColor="@color/secondary_text" />
 
 </LinearLayout>

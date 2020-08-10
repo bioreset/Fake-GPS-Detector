@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_third_screen"
+    app:startDestination="@+id/fragment_third_screen"
+    tools:ignore="UnusedNavigation">
+
+    <fragment
+        android:id="@+id/fragment_third_screen"
+        android:name="com.dariusz.fakegpsdetector.ui.thirdscreen.ThirdScreenFragment"
+        android:label="@string/title_celltowers"
+        tools:layout="@layout/celltower_list" />
+
+</navigation>

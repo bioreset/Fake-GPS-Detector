@@ -12,7 +12,7 @@ import com.squareup.moshi.JsonClass
 data class RoutersListModel(
     @ColumnInfo(name = "ssid")
     @field:Json(name = "ssid")
-    val ssid: String,
+    val ssid: String?,
     @ColumnInfo(name = "macAddress")
     @field:Json(name = "macAddress")
     val macAddress: String,

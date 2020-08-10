@@ -1,7 +1,12 @@
 package com.dariusz.fakegpsdetector.di
 
 import android.content.Context
-import com.dariusz.fakegpsdetector.datasource.*
+import com.dariusz.fakegpsdetector.sensordata.CellTowersLiveData
+import com.dariusz.fakegpsdetector.sensordata.LocationLiveData
+import com.dariusz.fakegpsdetector.sensordata.WifiScanResultsLiveData
+import com.dariusz.fakegpsdetector.utils.requirements.GpsStatusLiveData
+import com.dariusz.fakegpsdetector.utils.requirements.PermissionStatusLiveData
+import com.dariusz.fakegpsdetector.utils.requirements.WifiStatusLiveData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +21,9 @@ object DataSourceModule {
     @Singleton
     @Provides
     fun provideCellTowersLiveData(@ApplicationContext context: Context): CellTowersLiveData {
-        return CellTowersLiveData(context)
+        return CellTowersLiveData(
+            context
+        )
     }
 
     @Singleton
@@ -28,7 +35,9 @@ object DataSourceModule {
     @Singleton
     @Provides
     fun provideLocationLiveData(@ApplicationContext context: Context): LocationLiveData {
-        return LocationLiveData(context)
+        return LocationLiveData(
+            context
+        )
     }
 
     @Singleton
@@ -43,7 +52,9 @@ object DataSourceModule {
     @Singleton
     @Provides
     fun provideWifiScanResultsLiveData(@ApplicationContext context: Context): WifiScanResultsLiveData {
-        return WifiScanResultsLiveData(context)
+        return WifiScanResultsLiveData(
+            context
+        )
     }
 
     @Singleton

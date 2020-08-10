@@ -9,22 +9,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.databinding.CelltowerListBinding
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
 import com.dariusz.fakegpsdetector.utils.CellTowersUtils.mapCellTowers
 import com.dariusz.fakegpsdetector.utils.Injectors.provideThirdScreenViewModelFactory
-import com.dariusz.fakegpsdetector.utils.ViewUtils.observeOnce
-import com.dariusz.fakegpsdetector.utils.ViewUtils.performActionInsideCoroutineWithLiveData
+import com.dariusz.fakegpsdetector.utils.ViewUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
 class ThirdScreenFragment :
-    Fragment(R.layout.celltower_list),
-    SwipeRefreshLayout.OnRefreshListener {
+    Fragment() {
 
     private var listAdapterCell: CellTowersListAdapter? = null
 
@@ -56,14 +52,13 @@ class ThirdScreenFragment :
             adapter = listAdapterCell
         }
 
-        performActionInsideCoroutineWithLiveData(
-            fetchNewCellTowerData(),
+        fetchNewCellTowerData().observe(
             viewLifecycleOwner,
-            actionInCoroutine = {
-                addToDb(it)
-            },
-            actionOnMain = {
+            Observer {
                 updateItems(it)
+                ViewUtils.performActionInsideCoroutine(viewLifecycleOwner) {
+                    addToDb(it)
+                }
             }
         )
     }
@@ -82,6 +77,7 @@ class ThirdScreenFragment :
     }
 
     private fun updateItems(cellTowersList: List<CellInfo>? = null) {
+        listAdapterCell?.clearList()
         if (cellTowersList != null) {
             listAdapterCell?.submitList(mapCellTowers(cellTowersList))
         }
@@ -93,17 +89,5 @@ class ThirdScreenFragment :
         fetchNewCellTowerData().removeObservers(viewLifecycleOwner)
         cellTowerListBinding.celltowerlist.adapter = null
         cellTowerListBindingImpl = null
-    }
-
-    override fun onRefresh() {
-        cellTowerListBinding.swipeCelltowers.apply {
-            fetchNewCellTowerData().observeOnce(
-                viewLifecycleOwner,
-                Observer {
-                    updateItems(it)
-                }
-            )
-            isRefreshing = false
-        }
     }
 }

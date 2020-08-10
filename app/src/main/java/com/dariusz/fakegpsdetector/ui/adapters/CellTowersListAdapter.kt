@@ -51,6 +51,10 @@ class CellTowersListAdapter :
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun clearList() {
+        cellTowersList = emptyList()
+    }
+
     inner class CellTowersViewHolder(itemView: CelltowerItemBinding) :
         RecyclerView.ViewHolder(celltowerItemBinding.root) {
         val txtCellId: TextView = itemView.txtCellid
@@ -61,8 +65,8 @@ class CellTowersListAdapter :
     }
 
     class BlogItemDiffCallback(
-        var oldBlogList: List<CellTowerModel>,
-        var newBlogList: List<CellTowerModel>
+        private var oldBlogList: List<CellTowerModel>,
+        private var newBlogList: List<CellTowerModel>
 
     ) : DiffUtil.Callback() {
 
@@ -71,9 +75,9 @@ class CellTowersListAdapter :
             newItemPosition: Int
         ): Boolean {
             return (
-                oldBlogList[oldItemPosition].signalStrength
-                    == newBlogList[newItemPosition].signalStrength
-                )
+                    oldBlogList[oldItemPosition].cellId
+                            == newBlogList[newItemPosition].cellId
+                    )
         }
 
         override fun getOldListSize(): Int {
@@ -89,9 +93,9 @@ class CellTowersListAdapter :
             newItemPosition: Int
         ): Boolean {
             return (
-                oldBlogList[oldItemPosition]
-                    == newBlogList[newItemPosition]
-                )
+                    oldBlogList[oldItemPosition]
+                            == newBlogList[newItemPosition]
+                    )
         }
     }
 }

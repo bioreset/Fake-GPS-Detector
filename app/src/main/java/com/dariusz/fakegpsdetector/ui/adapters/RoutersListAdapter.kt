@@ -46,6 +46,10 @@ class RoutersListAdapter :
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun clearList() {
+        routersList = emptyList()
+    }
+
     inner class RoutersViewHolder(itemView: RoutersItemBinding) :
         RecyclerView.ViewHolder(routersListBinding.root) {
         val txtSSID: TextView = itemView.txtSsid
@@ -55,8 +59,8 @@ class RoutersListAdapter :
     }
 
     class BlogItemDiffCallback(
-        var oldBlogList: List<RoutersListModel>,
-        var newBlogList: List<RoutersListModel>
+        private var oldBlogList: List<RoutersListModel>,
+        private var newBlogList: List<RoutersListModel>
 
     ) : DiffUtil.Callback() {
 
@@ -65,9 +69,9 @@ class RoutersListAdapter :
             newItemPosition: Int
         ): Boolean {
             return (
-                oldBlogList[oldItemPosition].level
-                    == newBlogList[newItemPosition].level
-                )
+                    oldBlogList[oldItemPosition].id
+                            == newBlogList[newItemPosition].id
+                    )
         }
 
         override fun getOldListSize(): Int {
@@ -83,9 +87,9 @@ class RoutersListAdapter :
             newItemPosition: Int
         ): Boolean {
             return (
-                oldBlogList[oldItemPosition]
-                    == newBlogList[newItemPosition]
-                )
+                    oldBlogList[oldItemPosition]
+                            == newBlogList[newItemPosition]
+                    )
         }
     }
 }

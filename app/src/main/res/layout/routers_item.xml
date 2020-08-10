@@ -15,27 +15,31 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/primary_text" />
 
     <TextView
         android:id="@+id/txt_bssid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lines="1" />
+        android:lines="1"
+        android:textColor="@color/secondary_text" />
 
     <TextView
         android:id="@+id/txt_frequency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lines="1" />
+        android:lines="1"
+        android:textColor="@color/secondary_text" />
 
     <TextView
         android:id="@+id/txt_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lines="1" />
+        android:lines="1"
+        android:textColor="@color/secondary_text" />
 
 </LinearLayout>

@@ -21,7 +21,7 @@ object CellTowersUtils {
             } else null
         } ?: emptyList()
 
-    private fun newCellTowersListLte(cltwm: CellInfoLte): CellTowerModel? {
+    private fun newCellTowersListLte(cltwm: CellInfoLte): CellTowerModel {
         return CellTowerModel(
             cellId = cltwm.cellIdentity.ci.toString(),
             locationAreaCode = cltwm.cellIdentity.tac,
@@ -31,7 +31,7 @@ object CellTowersUtils {
         )
     }
 
-    private fun newCellTowersListGsm(cltwm: CellInfoGsm): CellTowerModel? {
+    private fun newCellTowersListGsm(cltwm: CellInfoGsm): CellTowerModel {
         return CellTowerModel(
             cellId = cltwm.cellIdentity.cid.toString(),
             locationAreaCode = cltwm.cellIdentity.lac,
@@ -41,7 +41,7 @@ object CellTowersUtils {
         )
     }
 
-    private fun newCellTowersListWcdma(cltwm: CellInfoWcdma): CellTowerModel? {
+    private fun newCellTowersListWcdma(cltwm: CellInfoWcdma): CellTowerModel {
         return CellTowerModel(
             cellId = cltwm.cellIdentity.cid.toString(),
             locationAreaCode = cltwm.cellIdentity.lac,
@@ -51,7 +51,7 @@ object CellTowersUtils {
         )
     }
 
-    private fun newCellTowersListCdma(cltwm: CellInfoCdma): CellTowerModel? {
+    private fun newCellTowersListCdma(cltwm: CellInfoCdma): CellTowerModel {
         return CellTowerModel(
             cellId = cltwm.cellIdentity.basestationId.toString(),
             locationAreaCode = cltwm.cellIdentity.latitude + cltwm.cellIdentity.longitude,
