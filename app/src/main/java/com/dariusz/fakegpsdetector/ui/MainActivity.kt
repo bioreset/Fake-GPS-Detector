@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.dariusz.fakegpsdetector.R
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             permissionArray
         ).observe(
             context as LifecycleOwner,
-            Observer {
+            {
                 handleAlertPermissions(it.status)
             }
         )
@@ -90,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     private fun subscribeToGpsStatus(context: Context) =
         mainViewModel.gpsStatus(context).observe(
             context as LifecycleOwner,
-            Observer {
+            {
                 handleAlertGps(context, it.status)
             }
         )
@@ -98,7 +97,7 @@ class MainActivity : AppCompatActivity() {
     private fun subscribeToWifiStatus(context: Context) =
         mainViewModel.wifiStatusCheck(context).observe(
             context as LifecycleOwner,
-            Observer {
+            {
                 handleAlertWifi(context, it.status)
             }
         )
@@ -132,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         )
         controller.observe(
             this@MainActivity,
-            Observer {
+            {
                 setupActionBarWithNavController(it)
             }
         )

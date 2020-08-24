@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.dariusz.fakegpsdetector.R
 import com.dariusz.fakegpsdetector.databinding.HomescreenBinding
 import com.dariusz.fakegpsdetector.model.CellTowerModel
@@ -86,7 +85,7 @@ class FirstScreenFragment : Fragment() {
     private fun performMain() =
         fetchLocationData().observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 googleMapObject!!.addMarker(
                     MarkerOptions().position(LatLng(it.latitude, it.longitude))
                         .title("Your current location: ${it.latitude}, ${it.longitude} ")
@@ -206,7 +205,7 @@ class FirstScreenFragment : Fragment() {
             getString(R.string.true_location_text)
         } else {
             getString(R.string.spoofed_location_text) +
-                    " . The distance to real location is more than " + checkLocationStatus()?.accuracy + " meters."
+                " . The distance to real location is more than " + checkLocationStatus()?.accuracy + " meters."
         }
     }
 

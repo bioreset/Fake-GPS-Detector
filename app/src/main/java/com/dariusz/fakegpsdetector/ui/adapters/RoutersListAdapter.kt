@@ -69,9 +69,9 @@ class RoutersListAdapter :
             newItemPosition: Int
         ): Boolean {
             return (
-                    oldBlogList[oldItemPosition].id
-                            == newBlogList[newItemPosition].id
-                    )
+                oldBlogList[oldItemPosition].id
+                    == newBlogList[newItemPosition].id
+                )
         }
 
         override fun getOldListSize(): Int {
@@ -87,9 +87,9 @@ class RoutersListAdapter :
             newItemPosition: Int
         ): Boolean {
             return (
-                    oldBlogList[oldItemPosition]
-                            == newBlogList[newItemPosition]
-                    )
+                oldBlogList[oldItemPosition]
+                    == newBlogList[newItemPosition]
+                )
         }
     }
 }

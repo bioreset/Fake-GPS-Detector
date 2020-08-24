@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dariusz.fakegpsdetector.databinding.RoutersListBinding
 import com.dariusz.fakegpsdetector.model.RoutersListModel.Companion.newRoutersList
@@ -53,7 +52,7 @@ class SecondScreenFragment : Fragment() {
 
         fetchNewRoutersData().observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 updateItems(it)
                 performActionInsideCoroutine(viewLifecycleOwner) {
                     addToDb(it)

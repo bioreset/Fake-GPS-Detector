@@ -75,9 +75,9 @@ class CellTowersListAdapter :
             newItemPosition: Int
         ): Boolean {
             return (
-                    oldBlogList[oldItemPosition].cellId
-                            == newBlogList[newItemPosition].cellId
-                    )
+                oldBlogList[oldItemPosition].cellId
+                    == newBlogList[newItemPosition].cellId
+                )
         }
 
         override fun getOldListSize(): Int {
@@ -93,9 +93,9 @@ class CellTowersListAdapter :
             newItemPosition: Int
         ): Boolean {
             return (
-                    oldBlogList[oldItemPosition]
-                            == newBlogList[newItemPosition]
-                    )
+                oldBlogList[oldItemPosition]
+                    == newBlogList[newItemPosition]
+                )
         }
     }
 }

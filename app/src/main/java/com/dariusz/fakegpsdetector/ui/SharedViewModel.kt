@@ -17,7 +17,8 @@ constructor() :
 
     fun permissionCheck(context: Context, permissionToWatch: List<String>) =
         providePermissionStatusLiveData(
-            context, permissionToWatch
+            context,
+            permissionToWatch
         )
 
     fun wifiStatusCheck(context: Context) =

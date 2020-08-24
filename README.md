@@ -1,16 +1,16 @@
 # Fake GPS Detector
 
-This application allows you to validate the current location of an Android smartphone by using the Geolocation API and data on Wi-Fi nodes and cell towers near the mobile device.
+This application allows for validation of the current location of an Android smartphone by using the Geolocation API and data on Wi-Fi nodes and cell towers near the mobile device.
 
 ## Features
 
--  View the data of nearby network devices
--  View the data of nearby cell towers
+- View the data of nearby network devices
+- View the data of nearby cell towers
 - Check your position on the map
 - Check the exact coordinates of the device
 - Verify device's location
 
-## Technologies, metodologies and libraries used
+## Technologies, methodologies and libraries used
 
 - MVVM pattern with Repositories
 - Geolocation API
@@ -20,8 +20,8 @@ This application allows you to validate the current location of an Android smart
 - Jetpack Navigation Component
 - LiveData
 - Coroutines
-- Hilt (dependency injection)
+- Dagger Hilt (dependency injection)
 - new Activity API
 - View Binding
-- ktlint (via Kotliner plugin)
+- ktlint
 - error handling

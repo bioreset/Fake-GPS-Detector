@@ -89,7 +89,7 @@ object NavigationSetup {
                         FragmentManager.POP_BACK_STACK_INCLUSIVE
                     )
                     val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
-                            as NavHostFragment
+                        as NavHostFragment
 
                     // Exclude the first fragment tag because it's always in the back stack.
                     if (firstFragmentTag != newlySelectedItemTag) {
@@ -181,11 +181,12 @@ object NavigationSetup {
         setOnNavigationItemReselectedListener { item ->
             val newlySelectedItemTag = graphIdToTagMap[item.itemId]
             val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
-                    as NavHostFragment
+                as NavHostFragment
             val navController = selectedFragment.navController
             // Pop the back stack to the start destination of the current navController graph
             navController.popBackStack(
-                navController.graph.startDestination, false
+                navController.graph.startDestination,
+                false
             )
         }
     }

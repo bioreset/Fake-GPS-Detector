@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dariusz.fakegpsdetector.databinding.CelltowerListBinding
 import com.dariusz.fakegpsdetector.ui.adapters.CellTowersListAdapter
@@ -54,7 +53,7 @@ class ThirdScreenFragment :
 
         fetchNewCellTowerData().observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 updateItems(it)
                 ViewUtils.performActionInsideCoroutine(viewLifecycleOwner) {
                     addToDb(it)
